@@ -6,10 +6,18 @@
       <h2 class="section-title" id="latest-heading">{{ data.settings.title | default(trans('latest_products')) }}</h2>
       <a href="{{ store.url }}/products?sort=newest" class="section-link">{{ trans('view_all') }}</a>
     </header>
-    <div class="products-grid products-grid-4">
-      {% for product in data.products | default([]) | slice(0, 8) %}
-        {% include 'components/product-card.twig' with { product: product } %}
-      {% endfor %}
-    </div>
+    {% if data.products is defined and data.products | length %}
+      <div class="products-grid products-grid-4">
+        {% for product in data.products | slice(0, 8) %}
+          {% include 'components/product-card.twig' with { product: product } %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center" style="padding:3rem 0;">
+        <i class="sicon-shopping-bag" style="font-size:3rem;color:var(--color-border);"></i>
+        <p style="color:var(--color-text-muted);margin-top:1rem;">{{ trans('no_products') }}</p>
+        <a href="{{ store.url }}/products" class="btn btn-accent" style="margin-top:1.25rem;">{{ trans('start_shopping') }}</a>
+      </div>
+    {% endif %}
   </div>
 </section>

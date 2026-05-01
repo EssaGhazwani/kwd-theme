@@ -24,26 +24,61 @@
 
 {% block content %}
 
-{# ═══ 1. HERO COMPONENTS (from Salla CMS) ═══ #}
-{% for component in page.content %}
-  {% if component.type == 'hero-slider' %}
-    {% include 'components/home/hero-slider.twig' with { data: component } %}
-  {% elseif component.type == 'component-photos-slider' %}
-    {% include 'components/home/component-photos-slider.twig' with { data: component } %}
-  {% elseif component.type == 'component-enhanced-slider' %}
-    {% include 'components/home/component-enhanced-slider.twig' with { data: component } %}
+{# ══════════════════════════════════════════════════
+   Determine which content types exist in page.content
+   so we can fall back gracefully when nothing is added
+══════════════════════════════════════════════════ #}
+{% set has_hero = false %}
+{% for c in page.content %}
+  {% if c.type in ['hero-slider','component-enhanced-slider','component-photos-slider'] %}
+    {% set has_hero = true %}
   {% endif %}
 {% endfor %}
 
-{# ═══ 2. TRUST BAR ═══ #}
+{# ═══ 1. HERO ═══
+   Always visible. If the merchant hasn't added a slider component yet,
+   show a branded fallback hero using store data. #}
+{% if has_hero %}
+  {% for component in page.content %}
+    {% if component.type == 'hero-slider' %}
+      {% include 'components/home/hero-slider.twig' with { data: component } %}
+    {% elseif component.type == 'component-photos-slider' %}
+      {% include 'components/home/component-photos-slider.twig' with { data: component } %}
+    {% elseif component.type == 'component-enhanced-slider' %}
+      {% include 'components/home/component-enhanced-slider.twig' with { data: component } %}
+    {% endif %}
+  {% endfor %}
+{% else %}
+  {# ── Default hero (no slider configured yet) ── #}
+  <section class="hero-slider hero-default" aria-label="{{ store.name }}" style="background:var(--color-primary);min-height:420px;display:flex;align-items:center;justify-content:center;text-align:center;padding:4rem 1rem;">
+    <div class="container">
+      {% if store.logo %}
+        <img src="{{ store.logo }}" alt="{{ store.name }}" style="height:72px;object-fit:contain;margin:0 auto 1.5rem;filter:brightness(0) invert(1);" loading="eager" fetchpriority="high">
+      {% endif %}
+      <h1 style="color:#fff;font-size:clamp(1.75rem,5vw,3rem);font-weight:700;line-height:1.2;margin-bottom:1rem;">
+        {{ store.name }}
+      </h1>
+      {% if settings.seo_default_description %}
+        <p style="color:rgba(255,255,255,.85);font-size:1.1rem;max-width:560px;margin:0 auto 2rem;line-height:1.7;">
+          {{ settings.seo_default_description }}
+        </p>
+      {% endif %}
+      <a href="{{ store.url }}/products" class="btn btn-accent btn-lg" style="font-size:1.05rem;padding:.9rem 2.5rem;">
+        {{ trans('start_shopping') }}
+      </a>
+    </div>
+  </section>
+{% endif %}
+
+{# ═══ 2. TRUST BAR — always visible ═══ #}
 {% include 'components/home/trust-bar.twig' %}
 
-{# ═══ 3. CATEGORIES GRID ═══ #}
+{# ═══ 3. CATEGORIES GRID — always visible if categories exist ═══ #}
 {% if store.categories is defined and store.categories | length %}
   {% include 'components/home/categories-grid.twig' %}
 {% endif %}
 
-{# ═══ 4. FEATURED / PRODUCT COMPONENTS (from Salla CMS) ═══ #}
+{# ═══ 4. ALL OTHER PAGE BUILDER COMPONENTS ═══ #}
 {% for component in page.content %}
   {% if component.type == 'component-featured-products' %}
     {% include 'components/home/component-featured-products.twig' with { data: component } %}
@@ -60,10 +95,13 @@
   {% elseif component.type == 'component-fixed-banner' %}
     {% include 'components/home/component-fixed-banner.twig' with { data: component } %}
 
+  {% elseif component.type == 'component-parallax-background' %}
+    {% include 'components/home/component-parallax-background.twig' with { data: component } %}
+
   {% elseif component.type == 'component-store-features' %}
     {% include 'components/home/component-store-features.twig' with { data: component } %}
 
-  {% elseif component.type == 'component-testimonials' or component.type == 'component-random-testimonials' %}
+  {% elseif component.type in ['component-testimonials','component-random-testimonials'] %}
     {% include 'components/home/component-testimonials.twig' with { data: component } %}
 
   {% elseif component.type == 'component-brands' %}
@@ -72,8 +110,8 @@
   {% elseif component.type == 'component-youtube' %}
     {% include 'components/home/component-youtube.twig' with { data: component } %}
 
-  {% elseif component.type == 'component-square-photos' or component.type == 'component-enhanced-square-banners' %}
-    {% include 'components/home/component-square-photos.twig' with { data: component } %}
+  {% elseif component.type in ['component-square-photos','component-enhanced-square-banners'] %}
+    {% include 'components/home/component-enhanced-square-banners.twig' with { data: component } %}
 
   {% elseif component.type == 'component-main-links' %}
     {% include 'components/home/component-main-links.twig' with { data: component } %}
@@ -97,7 +135,6 @@
         {{ trans('view_all_articles') }} <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
       </a>
     </header>
-
     <div class="blog-grid">
       {% for post in page.blog_posts | slice(0, 3) %}
         {% include 'components/blog-card.twig' with { post: post } %}
