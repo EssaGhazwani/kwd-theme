@@ -1,0 +1,51 @@
+{# ═══════════════════════════════════════════════
+   BLOG CARD COMPONENT (reusable)
+═══════════════════════════════════════════════ #}
+
+<article class="blog-card" itemscope itemtype="https://schema.org/BlogPosting">
+
+  {# Thumb #}
+  {% if post.image is defined and post.image.url %}
+    <a href="{{ post.url }}" class="blog-thumb" tabindex="-1" aria-hidden="true">
+      <img
+        src="{{ post.image.url }}"
+        alt="{{ post.image.alt | default(post.title) }}"
+        width="400"
+        height="225"
+        loading="lazy"
+        itemprop="image"
+      >
+    </a>
+  {% endif %}
+
+  <div class="blog-body">
+    {# Meta #}
+    <div class="blog-meta">
+      {% if post.tags is defined and post.tags | length %}
+        <span class="blog-tag">{{ post.tags[0] }}</span>
+      {% endif %}
+      <time itemprop="datePublished" datetime="{{ post.created_at }}">
+        {{ post.created_at | date('d/m/Y') }}
+      </time>
+      {% if post.reading_time is defined %}
+        <span>{{ post.reading_time }} {{ trans('min_read') }}</span>
+      {% endif %}
+    </div>
+
+    {# Title #}
+    <h3 class="blog-title" itemprop="headline">
+      <a href="{{ post.url }}" itemprop="url">{{ post.title }}</a>
+    </h3>
+
+    {# Excerpt #}
+    {% if post.excerpt is defined and post.excerpt %}
+      <p class="blog-excerpt" itemprop="description">{{ post.excerpt | striptags | truncate(120) }}</p>
+    {% endif %}
+
+    <a href="{{ post.url }}" class="blog-read-more">
+      {{ trans('read_more') }}
+      <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+    </a>
+  </div>
+
+</article>

@@ -1,0 +1,18 @@
+{# MAIN LINKS — KWD Theme #}
+{% if data.settings.links is defined and data.settings.links | length %}
+<section class="section" style="background:var(--color-surface);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);">
+  <div class="container">
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;">
+      {% for link in data.settings.links %}
+        <a
+          href="{{ link.url }}"
+          style="display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.25rem;border:1px solid var(--color-border);border-radius:var(--radius-md);background:#fff;font-weight:500;color:var(--color-primary);font-size:.9rem;text-decoration:none;transition:var(--transition);"
+        >
+          {% if link.icon %}<i class="{{ link.icon }}" aria-hidden="true"></i>{% endif %}
+          {{ link.title }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

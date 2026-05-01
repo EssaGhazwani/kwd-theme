@@ -1,0 +1,49 @@
+{# ═══════════════════════════════════════════════
+   BREADCRUMB COMPONENT — KWD Theme
+   SEO: BreadcrumbList Schema.org structured data
+   Accessibility: aria-label, aria-current
+═══════════════════════════════════════════════ #}
+
+{% if breadcrumb is defined and breadcrumb | length > 0 %}
+
+<nav class="breadcrumb-nav" aria-label="{{ trans('breadcrumb') }}">
+  <div class="container">
+    <ol class="breadcrumb-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+
+      {# Home — always first #}
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="{{ store.url }}" itemprop="item" aria-label="{{ trans('home') }}">
+          <i class="sicon-home" aria-hidden="true"></i>
+          <span itemprop="name" class="sr-only">{{ trans('home') }}</span>
+        </a>
+        <meta itemprop="position" content="1">
+        <span class="breadcrumb-sep" aria-hidden="true">
+          {% if store.language.direction == 'rtl' %}/{% else %}/{% endif %}
+        </span>
+      </li>
+
+      {# Dynamic breadcrumb items #}
+      {% for item in breadcrumb %}
+        {% set pos = loop.index + 1 %}
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+
+          {% if not loop.last %}
+            <a href="{{ item.url }}" itemprop="item">
+              <span itemprop="name">{{ item.name }}</span>
+            </a>
+            <meta itemprop="position" content="{{ pos }}">
+            <span class="breadcrumb-sep" aria-hidden="true">/</span>
+          {% else %}
+            <span itemprop="name" aria-current="page">{{ item.name }}</span>
+            <meta itemprop="item" content="{{ item.url }}">
+            <meta itemprop="position" content="{{ pos }}">
+          {% endif %}
+
+        </li>
+      {% endfor %}
+
+    </ol>
+  </div>
+</nav>
+
+{% endif %}

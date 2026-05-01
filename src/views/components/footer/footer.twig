@@ -1,0 +1,180 @@
+{# ═══════════════════════════════════════════════
+   FOOTER COMPONENT — KWD Theme
+   SEO: Schema.org WPFooter, SiteLinks structure
+═══════════════════════════════════════════════ #}
+
+<footer class="site-footer" role="contentinfo" itemscope itemtype="https://schema.org/WPFooter">
+
+  {# ── Footer Top ── #}
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-grid">
+
+        {# ── Brand Column ── #}
+        <div class="footer-brand" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+          <a href="{{ store.url }}" aria-label="{{ store.name }}">
+            {% if store.logo %}
+              <img src="{{ store.logo }}" alt="{{ store.name }}" height="40" class="footer-brand-logo" style="height:40px;filter:brightness(0) invert(1);margin-bottom:.75rem;" loading="lazy" itemprop="logo">
+            {% else %}
+              <div class="footer-brand-text" itemprop="name">{{ store.name }}</div>
+            {% endif %}
+          </a>
+          <p class="footer-about" itemprop="description">
+            {{ settings.seo_default_description }}
+          </p>
+
+          {# Social Links #}
+          <div class="footer-social" aria-label="{{ trans('social_links') }}">
+            {% if store.social.twitter %}
+              <a href="{{ store.social.twitter }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <i class="sicon-twitter" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+            {% if store.social.instagram %}
+              <a href="{{ store.social.instagram }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <i class="sicon-instagram" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+            {% if store.social.snapchat %}
+              <a href="{{ store.social.snapchat }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Snapchat">
+                <i class="sicon-snapchat" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+            {% if store.social.tiktok %}
+              <a href="{{ store.social.tiktok }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                <i class="sicon-tiktok" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+            {% if store.social.youtube %}
+              <a href="{{ store.social.youtube }}" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                <i class="sicon-youtube" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+
+        {# ── Quick Links ── #}
+        <div class="footer-col">
+          <h3 class="footer-heading">{{ trans('quick_links') }}</h3>
+          <nav aria-label="{{ trans('quick_links') }}">
+            <ul class="footer-links" role="list">
+              <li><a href="{{ store.url }}"><i class="sicon-home" aria-hidden="true"></i> {{ trans('home') }}</a></li>
+              <li><a href="{{ store.url }}/products"><i class="sicon-bag" aria-hidden="true"></i> {{ trans('all_products') }}</a></li>
+              <li><a href="{{ store.url }}/brands"><i class="sicon-award" aria-hidden="true"></i> {{ trans('brands') }}</a></li>
+              <li><a href="{{ store.url }}/blog"><i class="sicon-file-text" aria-hidden="true"></i> {{ trans('blog') }}</a></li>
+              <li><a href="{{ store.url }}/search"><i class="sicon-search" aria-hidden="true"></i> {{ trans('search') }}</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        {# ── Customer Service ── #}
+        <div class="footer-col">
+          <h3 class="footer-heading">{{ trans('customer_service') }}</h3>
+          <nav aria-label="{{ trans('customer_service') }}">
+            <ul class="footer-links" role="list">
+              <li><a href="{{ store.url }}/account"><i class="sicon-user" aria-hidden="true"></i> {{ trans('my_account') }}</a></li>
+              <li><a href="{{ store.url }}/orders"><i class="sicon-package" aria-hidden="true"></i> {{ trans('my_orders') }}</a></li>
+              <li><a href="{{ store.url }}/wishlist"><i class="sicon-heart" aria-hidden="true"></i> {{ trans('wishlist') }}</a></li>
+              <li><a href="{{ store.url }}/cart"><i class="sicon-shopping-cart" aria-hidden="true"></i> {{ trans('cart') }}</a></li>
+              <li><a href="{{ store.url }}/loyalty"><i class="sicon-star" aria-hidden="true"></i> {{ trans('loyalty_points') }}</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        {# ── Contact ── #}
+        <div class="footer-col" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+          <h3 class="footer-heading">{{ trans('contact_us') }}</h3>
+          <div class="footer-contact">
+            {% if store.address %}
+              <div class="footer-contact-item">
+                <i class="sicon-location footer-contact-icon" aria-hidden="true"></i>
+                <span itemprop="streetAddress">{{ store.address }}</span>
+              </div>
+            {% endif %}
+            {% if store.phone %}
+              <div class="footer-contact-item">
+                <i class="sicon-phone footer-contact-icon" aria-hidden="true"></i>
+                <a href="tel:{{ store.phone }}" itemprop="telephone" style="color:inherit;">{{ store.phone }}</a>
+              </div>
+            {% endif %}
+            {% if store.email %}
+              <div class="footer-contact-item">
+                <i class="sicon-mail footer-contact-icon" aria-hidden="true"></i>
+                <a href="mailto:{{ store.email }}" itemprop="email" style="color:inherit;">{{ store.email }}</a>
+              </div>
+            {% endif %}
+            {% if store.whatsapp %}
+              <div class="footer-contact-item">
+                <i class="sicon-whatsapp footer-contact-icon" aria-hidden="true"></i>
+                <a href="https://wa.me/{{ store.whatsapp }}" target="_blank" rel="noopener noreferrer" style="color:inherit;">
+                  {{ trans('whatsapp_us') }}
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          {# Newsletter #}
+          {% if settings.show_newsletter %}
+            <div style="margin-top:1.25rem;">
+              <p style="font-size:.85rem;margin-bottom:.65rem;font-weight:600;color:rgba(255,255,255,.85);">
+                {{ trans('newsletter_title') }}
+              </p>
+              <salla-newsletter style="display:block;">
+                <div style="display:flex;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.2);">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="{{ trans('email_placeholder') }}"
+                    style="flex:1;padding:.6rem .85rem;background:rgba(255,255,255,.1);border:none;color:#fff;font-size:.85rem;font-family:inherit;"
+                    aria-label="{{ trans('email') }}"
+                  >
+                  <button type="submit" style="padding:.6rem 1rem;background:var(--color-accent);color:#fff;border:none;font-weight:600;font-size:.8rem;cursor:pointer;font-family:inherit;">
+                    {{ trans('subscribe') }}
+                  </button>
+                </div>
+              </salla-newsletter>
+            </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {# ── Footer Bottom ── #}
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+
+        <p class="footer-copyright">
+          {{ settings.footer_copyright | default('© ' ~ 'now' | date('Y') ~ ' ' ~ store.name ~ '. جميع الحقوق محفوظة.') }}
+        </p>
+
+        {# Payment Icons #}
+        <div class="footer-payment" aria-label="{{ trans('payment_methods') }}">
+          <img src="{{ 'images/payments/mada.svg' | asset_url }}" alt="مدى" height="24" class="payment-icon" loading="lazy">
+          <img src="{{ 'images/payments/visa.svg' | asset_url }}" alt="Visa" height="24" class="payment-icon" loading="lazy">
+          <img src="{{ 'images/payments/mastercard.svg' | asset_url }}" alt="Mastercard" height="24" class="payment-icon" loading="lazy">
+          <img src="{{ 'images/payments/stcpay.svg' | asset_url }}" alt="STC Pay" height="24" class="payment-icon" loading="lazy">
+          <img src="{{ 'images/payments/applepay.svg' | asset_url }}" alt="Apple Pay" height="24" class="payment-icon" loading="lazy">
+          <img src="{{ 'images/payments/tamara.svg' | asset_url }}" alt="Tamara" height="24" class="payment-icon" loading="lazy">
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+{# ── Schema.org: SiteLinks / Footer structured data ── #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{{ trans('quick_links') }}",
+  "itemListElement": [
+    { "@type": "SiteLinksSearchBox", "url": "{{ store.url }}", "potentialAction": { "@type": "SearchAction", "target": "{{ store.url }}/search?q={search_term_string}", "query-input": "required name=search_term_string" } }
+  ]
+}
+</script>

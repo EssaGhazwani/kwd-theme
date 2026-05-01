@@ -1,0 +1,33 @@
+{# ENHANCED SQUARE BANNERS — KWD Theme #}
+{% if data.settings.banners is defined and data.settings.banners | length %}
+<section class="section">
+  <div class="container">
+    {% if data.settings.title %}
+      <h2 class="section-title" style="margin-bottom:1.5rem;">{{ data.settings.title }}</h2>
+    {% endif %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;">
+      {% for banner in data.settings.banners %}
+        <a
+          href="{{ banner.url | default('#') }}"
+          style="display:block;position:relative;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:1;background:var(--color-surface);"
+          aria-label="{{ banner.title | default('') }}"
+        >
+          {% if banner.image %}
+            <img
+              src="{{ banner.image }}"
+              alt="{{ banner.title | default('') }}"
+              loading="lazy"
+              style="width:100%;height:100%;object-fit:cover;transition:transform .4s ease;"
+            >
+          {% endif %}
+          {% if banner.title %}
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent);display:flex;align-items:flex-end;padding:1.25rem;">
+              <h3 style="color:#fff;font-weight:700;font-size:1.05rem;line-height:1.3;">{{ banner.title }}</h3>
+            </div>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

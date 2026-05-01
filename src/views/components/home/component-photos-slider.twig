@@ -1,0 +1,34 @@
+{# PHOTOS SLIDER — KWD Theme #}
+{% if data.settings.images is defined and data.settings.images | length %}
+<section class="section">
+  <div class="container">
+    {% if data.settings.title %}
+      <h2 class="section-title" style="margin-bottom:1.5rem;">{{ data.settings.title }}</h2>
+    {% endif %}
+    <div class="hero-slider" id="photos-slider" aria-label="{{ data.settings.title | default('Photos') }}">
+      <div class="slides">
+        {% for photo in data.settings.images %}
+          <div class="slide {% if loop.first %}active{% endif %}">
+            <a href="{{ photo.url | default('#') }}" style="display:block;border-radius:var(--radius-lg);overflow:hidden;">
+              <img
+                src="{{ photo.image }}"
+                alt="{{ photo.alt | default('') }}"
+                loading="{{ loop.first ? 'eager' : 'lazy' }}"
+                style="width:100%;object-fit:cover;max-height:460px;"
+              >
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+      {% if data.settings.images | length > 1 %}
+        <button class="slider-prev" aria-label="{{ trans('previous_slide') }}">
+          <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'right' : 'left' }}" aria-hidden="true"></i>
+        </button>
+        <button class="slider-next" aria-label="{{ trans('next_slide') }}">
+          <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+        </button>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}

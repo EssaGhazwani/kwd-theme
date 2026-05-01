@@ -1,0 +1,17 @@
+{# FIXED PRODUCTS — KWD Theme (grid of pinned products) #}
+<section class="section">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label">{{ data.settings.label | default(trans('featured')) }}</span>
+      <h2 class="section-title">{{ data.settings.title | default(trans('products')) }}</h2>
+      {% if data.settings.url %}
+        <a href="{{ data.settings.url }}" class="section-link">{{ trans('view_all') }}</a>
+      {% endif %}
+    </header>
+    <div class="products-grid products-grid-4">
+      {% for product in data.products | default([]) | slice(0, 8) %}
+        {% include 'components/product-card.twig' with { product: product } %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

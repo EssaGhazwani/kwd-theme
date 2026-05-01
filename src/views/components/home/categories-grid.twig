@@ -1,0 +1,48 @@
+{# ═══════════════════════════════════════════════
+   CATEGORIES GRID COMPONENT
+═══════════════════════════════════════════════ #}
+
+{% set cats = data.settings.categories | default(store.categories) %}
+{% set title = data.settings.title | default(trans('shop_by_category')) %}
+
+{% if cats | length %}
+<section class="categories-section section-sm" aria-labelledby="categories-heading">
+  <div class="container">
+
+    <header class="section-header" style="text-align:start;margin-bottom:1.5rem;">
+      <h2 class="section-title" id="categories-heading">{{ title }}</h2>
+    </header>
+
+    <div class="categories-grid-wrap">
+      {% for cat in cats | slice(0, 8) %}
+        <a
+          href="{{ cat.url }}"
+          class="category-card"
+          aria-label="{{ cat.name }}"
+          title="{{ cat.name }}"
+        >
+          {% if cat.image %}
+            <img
+              class="category-thumb"
+              src="{{ cat.image }}"
+              alt="{{ cat.name }}"
+              width="64"
+              height="64"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="category-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--color-border);">
+              <i class="sicon-grid" style="font-size:1.5rem;color:var(--color-text-muted);" aria-hidden="true"></i>
+            </div>
+          {% endif %}
+          <span class="category-name">{{ cat.name }}</span>
+          {% if cat.products_count is defined %}
+            <span style="font-size:.72rem;color:var(--color-text-muted);">{{ cat.products_count }} {{ trans('products') }}</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}

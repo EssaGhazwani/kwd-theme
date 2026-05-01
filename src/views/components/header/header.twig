@@ -1,0 +1,193 @@
+{# ═══════════════════════════════════════════════
+   HEADER COMPONENT — KWD Theme
+   Includes: Announcement bar, Logo, Search,
+             Actions (cart/wishlist/account), Nav
+═══════════════════════════════════════════════ #}
+
+<header class="site-header" role="banner" itemscope itemtype="https://schema.org/WPHeader">
+
+  <div class="container">
+    <div class="header-inner">
+
+      {# ── Mobile menu button ── #}
+      <button class="mobile-menu-btn" aria-label="{{ trans('open_menu') }}" aria-expanded="false" aria-controls="site-nav">
+        <i class="sicon-menu" aria-hidden="true"></i>
+      </button>
+
+      {# ── Logo ── #}
+      <a href="{{ store.url }}" class="site-logo" aria-label="{{ store.name }} - {{ trans('home') }}" itemprop="url">
+        {% if store.logo %}
+          <img
+            src="{{ store.logo }}"
+            alt="{{ store.name }}"
+            width="160"
+            height="44"
+            loading="eager"
+            fetchpriority="high"
+            itemprop="image"
+          >
+        {% else %}
+          <span class="logo-text" itemprop="name">{{ store.name }}</span>
+        {% endif %}
+      </a>
+
+      {# ── Search ── #}
+      <div class="header-search">
+        <form class="search-form" action="{{ store.url }}/search" method="get" role="search" data-search-form aria-label="{{ trans('search') }}">
+          <label for="header-search-input" class="sr-only">{{ trans('search_placeholder') }}</label>
+          <input
+            id="header-search-input"
+            class="search-input"
+            type="search"
+            name="q"
+            placeholder="{{ trans('search_placeholder') }}"
+            autocomplete="off"
+            aria-label="{{ trans('search_placeholder') }}"
+          >
+          <button class="search-btn" type="submit" aria-label="{{ trans('search') }}">
+            <i class="sicon-search" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+
+      {# ── Actions ── #}
+      <nav class="header-actions" aria-label="{{ trans('account_nav') }}">
+
+        {# Mobile search trigger #}
+        <button class="action-btn" data-search-open aria-label="{{ trans('search') }}" style="display:none;" id="mobile-search-btn">
+          <i class="sicon-search action-icon" aria-hidden="true"></i>
+        </button>
+
+        {# Language switcher #}
+        {% if store.languages|length > 1 %}
+          <div class="action-btn lang-switcher" style="position:relative;">
+            <i class="sicon-globe action-icon" aria-hidden="true"></i>
+            <span class="lang-current">{{ store.language.code | upper }}</span>
+            <div class="nav-dropdown lang-dropdown">
+              {% for lang in store.languages %}
+                <a href="{{ lang.url }}" hreflang="{{ lang.code }}" {% if lang.code == store.language.code %}aria-current="true"{% endif %}>
+                  {{ lang.name }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {# Currency switcher #}
+        {% if store.currencies|length > 1 %}
+          <salla-currency-switcher class="action-btn">
+            <i class="sicon-money action-icon" aria-hidden="true"></i>
+            <span>{{ store.currency.code }}</span>
+          </salla-currency-switcher>
+        {% endif %}
+
+        {# Wishlist #}
+        {% if settings.enable_wishlist %}
+          <a href="{{ store.url }}/wishlist" class="action-btn" aria-label="{{ trans('wishlist') }}" title="{{ trans('wishlist') }}">
+            <i class="sicon-heart action-icon" aria-hidden="true"></i>
+            <salla-wishlist-count class="badge" data-cart-wishlist></salla-wishlist-count>
+          </a>
+        {% endif %}
+
+        {# Account #}
+        <a
+          href="{{ user.is_guest ? store.url ~ '/login' : store.url ~ '/account' }}"
+          class="action-btn"
+          aria-label="{{ user.is_guest ? trans('login') : user.name }}"
+          title="{{ user.is_guest ? trans('login') : user.name }}"
+        >
+          <i class="sicon-user action-icon" aria-hidden="true"></i>
+          <span class="action-label">{{ user.is_guest ? trans('login') : trans('account') }}</span>
+        </a>
+
+        {# Cart #}
+        <a href="{{ store.url }}/cart" class="action-btn" aria-label="{{ trans('cart') }}" title="{{ trans('cart') }}">
+          <i class="sicon-shopping-cart action-icon" aria-hidden="true"></i>
+          <span class="badge" data-cart-count>{{ cart.items_count | default(0) }}</span>
+        </a>
+
+      </nav>
+
+    </div>
+  </div>
+
+  {# ── Main Navigation ── #}
+  <nav class="site-nav" id="site-nav" aria-label="{{ trans('main_nav') }}" role="navigation">
+    <div class="container">
+
+      <ul class="nav-list" role="list">
+        <li class="nav-item">
+          <a href="{{ store.url }}" class="nav-link {% if page.type == 'home' %}active{% endif %}" aria-current="{% if page.type == 'home' %}page{% endif %}">
+            {{ trans('home') }}
+          </a>
+        </li>
+
+        {% if store.categories is defined %}
+          {% for category in store.categories | slice(0, 8) %}
+            <li class="nav-item">
+              {% if category.children is defined and category.children | length %}
+                <a href="{{ category.url }}" class="nav-link" aria-haspopup="true">
+                  {{ category.name }}
+                  <i class="sicon-chevron-down" aria-hidden="true"></i>
+                </a>
+                <div class="nav-dropdown" role="menu">
+                  {% for child in category.children %}
+                    <a href="{{ child.url }}" role="menuitem">{{ child.name }}</a>
+                  {% endfor %}
+                  <a href="{{ category.url }}" class="text-accent font-semibold" role="menuitem">
+                    {{ trans('view_all') }} {{ category.name }}
+                  </a>
+                </div>
+              {% else %}
+                <a href="{{ category.url }}" class="nav-link">{{ category.name }}</a>
+              {% endif %}
+            </li>
+          {% endfor %}
+        {% endif %}
+
+        <li class="nav-item">
+          <a href="{{ store.url }}/brands" class="nav-link {% if page.type == 'brands' %}active{% endif %}">
+            {{ trans('brands') }}
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ store.url }}/blog" class="nav-link {% if page.type == 'blog' %}active{% endif %}">
+            {{ trans('blog') }}
+          </a>
+        </li>
+
+      </ul>
+
+    </div>
+  </nav>
+
+</header>
+
+{# ── Search Overlay (mobile/full) ── #}
+<div class="search-overlay" role="dialog" aria-modal="true" aria-label="{{ trans('search') }}" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;display:flex;align-items:flex-start;justify-content:center;padding:4rem 1rem;backdrop-filter:blur(4px);opacity:0;visibility:hidden;transition:all .25s;">
+  <div style="background:#fff;border-radius:12px;padding:1.5rem;width:100%;max-width:600px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h2 style="font-size:1.1rem;font-weight:700;">{{ trans('search') }}</h2>
+      <button data-search-close aria-label="{{ trans('close') }}" style="font-size:1.5rem;color:#6c757d;">
+        <i class="sicon-close"></i>
+      </button>
+    </div>
+    <form action="{{ store.url }}/search" method="get" data-search-form>
+      <div class="search-form" style="border-radius:8px;">
+        <input class="search-input search-overlay-input" type="search" name="q" placeholder="{{ trans('search_placeholder') }}" autocomplete="off">
+        <button class="search-btn" type="submit">
+          <i class="sicon-search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .search-overlay.active { opacity:1 !important; visibility:visible !important; }
+  @media (max-width:767px) {
+    #mobile-search-btn { display:flex !important; }
+    .header-search { display:none !important; }
+  }
+</style>

@@ -1,0 +1,49 @@
+{# CUSTOMER PROFILE — KWD Theme #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:2rem;align-items:start;">
+
+      {# Sidebar #}
+      <aside style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1.5rem;">
+        <div style="text-align:center;margin-bottom:1.5rem;">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;margin:0 auto .75rem;">
+            {{ user.name | slice(0, 1) | upper }}
+          </div>
+          <p class="font-bold" style="color:var(--color-primary);">{{ user.name }}</p>
+          <p style="font-size:.82rem;color:var(--color-text-muted);">{{ user.email }}</p>
+        </div>
+        <nav aria-label="{{ trans('account_nav') }}">
+          <ul class="footer-links" style="gap:.35rem;">
+            <li><a href="{{ store.url }}/account" style="color:var(--color-text);"><i class="sicon-user" aria-hidden="true"></i> {{ trans('profile') }}</a></li>
+            <li><a href="{{ store.url }}/orders"  style="color:var(--color-text);"><i class="sicon-package" aria-hidden="true"></i> {{ trans('my_orders') }}</a></li>
+            <li><a href="{{ store.url }}/wishlist" style="color:var(--color-text);"><i class="sicon-heart" aria-hidden="true"></i> {{ trans('wishlist') }}</a></li>
+            <li><a href="{{ store.url }}/loyalty" style="color:var(--color-text);"><i class="sicon-star" aria-hidden="true"></i> {{ trans('loyalty_points') }}</a></li>
+            <li><a href="{{ store.url }}/notifications" style="color:var(--color-text);"><i class="sicon-bell" aria-hidden="true"></i> {{ trans('notifications') }}</a></li>
+          </ul>
+        </nav>
+        <hr class="divider">
+        <salla-button data-logout class="btn btn-outline btn-full btn-sm" style="color:#ef4444;border-color:#ef4444;">
+          <i class="sicon-log-out" aria-hidden="true"></i> {{ trans('logout') }}
+        </salla-button>
+      </aside>
+
+      {# Main #}
+      <div>
+        <h1 style="font-size:1.25rem;font-weight:700;color:var(--color-primary);margin-bottom:1.5rem;">
+          {{ trans('my_profile') }}
+        </h1>
+        <salla-profile></salla-profile>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{# PARALLAX BACKGROUND — KWD Theme #}
+{% if data.settings.image %}
+<section
+  class="section"
+  style="position:relative;background-image:url('{{ data.settings.image }}');background-attachment:fixed;background-size:cover;background-position:center;padding:6rem 0;overflow:hidden;"
+  aria-label="{{ data.settings.title | default('') }}"
+>
+  <div style="position:absolute;inset:0;background:rgba(26,26,46,.55);"></div>
+  <div class="container" style="position:relative;z-index:1;text-align:center;color:#fff;">
+    {% if data.settings.title %}
+      <h2 style="font-size:clamp(1.5rem,4vw,2.5rem);font-weight:700;margin-bottom:.75rem;">{{ data.settings.title }}</h2>
+    {% endif %}
+    {% if data.settings.subtitle %}
+      <p style="font-size:1.1rem;opacity:.9;margin-bottom:1.75rem;max-width:600px;margin-inline:auto;">{{ data.settings.subtitle }}</p>
+    {% endif %}
+    {% if data.settings.btn_text and data.settings.btn_url %}
+      <a href="{{ data.settings.btn_url }}" class="btn btn-accent btn-lg">{{ data.settings.btn_text }}</a>
+    {% endif %}
+  </div>
+</section>
+{% endif %}

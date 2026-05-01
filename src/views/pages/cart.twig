@@ -1,0 +1,148 @@
+{# ═══════════════════════════════════════════════
+   CART PAGE — KWD Theme
+═══════════════════════════════════════════════ #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block content %}
+<div class="cart-page">
+  <div class="container">
+
+    <h1 style="font-size:1.5rem;font-weight:700;color:var(--color-primary);margin-bottom:2rem;">
+      {{ trans('cart') }}
+      {% if cart.items_count %}<span style="font-size:1rem;font-weight:400;color:var(--color-text-muted);">({{ cart.items_count }} {{ trans('items') }})</span>{% endif %}
+    </h1>
+
+    {% if cart.items is defined and cart.items | length %}
+      <div class="cart-inner">
+
+        {# ── Cart Items ── #}
+        <div class="cart-items">
+          {% for item in cart.items %}
+            <div class="cart-item" data-cart-item="{{ item.id }}">
+              <img
+                class="cart-item-img"
+                src="{{ item.product.image.url | default(settings.placeholder | asset_url) }}"
+                alt="{{ item.product.name }}"
+                width="90"
+                height="90"
+                loading="lazy"
+              >
+              <div>
+                <p class="cart-item-name">
+                  <a href="{{ item.product.url }}">{{ item.product.name }}</a>
+                </p>
+                {% if item.options is defined and item.options | length %}
+                  {% for opt in item.options %}
+                    <span class="cart-item-variant">{{ opt.name }}: {{ opt.value }}</span>
+                  {% endfor %}
+                {% endif %}
+                <div style="margin-top:.65rem;">
+                  <div class="qty-selector" style="display:inline-flex;">
+                    <button class="qty-btn" data-qty="minus" aria-label="{{ trans('decrease_qty') }}">−</button>
+                    <input class="qty-input" type="number" value="{{ item.quantity }}" min="1" max="{{ item.product.quantity | default(999) }}" data-item-id="{{ item.id }}">
+                    <button class="qty-btn" data-qty="plus" aria-label="{{ trans('increase_qty') }}">+</button>
+                  </div>
+                </div>
+              </div>
+              <div style="text-align:end;">
+                <div class="cart-item-price">{{ item.total | money }}</div>
+                <salla-button
+                  class="cart-remove"
+                  data-remove-item="{{ item.id }}"
+                  aria-label="{{ trans('remove') }} {{ item.product.name }}"
+                  title="{{ trans('remove') }}"
+                >
+                  <i class="sicon-trash" aria-hidden="true"></i>
+                </salla-button>
+              </div>
+            </div>
+          {% endfor %}
+
+          {# Continue shopping #}
+          <div style="margin-top:1.5rem;">
+            <a href="{{ store.url }}/products" class="btn btn-outline">
+              <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'right' : 'left' }}" aria-hidden="true"></i>
+              {{ trans('continue_shopping') }}
+            </a>
+          </div>
+        </div>
+
+        {# ── Order Summary ── #}
+        <aside class="order-summary" aria-label="{{ trans('order_summary') }}">
+          <h2 class="order-summary-title">{{ trans('order_summary') }}</h2>
+
+          <div class="summary-row">
+            <span>{{ trans('subtotal') }}</span>
+            <span>{{ cart.subtotal | money }}</span>
+          </div>
+          {% if cart.discount is defined and cart.discount > 0 %}
+            <div class="summary-row" style="color:#22c55e;">
+              <span>{{ trans('discount') }}</span>
+              <span>- {{ cart.discount | money }}</span>
+            </div>
+          {% endif %}
+          {% if cart.shipping_cost is defined %}
+            <div class="summary-row">
+              <span>{{ trans('shipping') }}</span>
+              <span>{{ cart.shipping_cost > 0 ? cart.shipping_cost | money : trans('free') }}</span>
+            </div>
+          {% endif %}
+          {% if cart.tax is defined and cart.tax > 0 %}
+            <div class="summary-row">
+              <span>{{ trans('vat') }} (15%)</span>
+              <span>{{ cart.tax | money }}</span>
+            </div>
+          {% endif %}
+          <div class="summary-row total">
+            <span>{{ trans('total') }}</span>
+            <span>{{ cart.total | money }}</span>
+          </div>
+
+          {# Coupon #}
+          <salla-coupon style="display:block;margin:1rem 0;">
+            <div class="coupon-form">
+              <input class="coupon-input" type="text" placeholder="{{ trans('coupon_placeholder') }}" name="coupon" aria-label="{{ trans('coupon') }}">
+              <button class="btn btn-outline" type="submit">{{ trans('apply') }}</button>
+            </div>
+          </salla-coupon>
+
+          {# Checkout button #}
+          <salla-button
+            class="btn btn-accent btn-full btn-lg"
+            data-checkout
+            style="display:flex;margin-top:1rem;"
+          >
+            {{ trans('proceed_to_checkout') }}
+            <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+          </salla-button>
+
+          {# Trust indicators #}
+          <div style="margin-top:1.25rem;text-align:center;">
+            <p style="font-size:.75rem;color:var(--color-text-muted);display:flex;align-items:center;justify-content:center;gap:.4rem;">
+              <i class="sicon-lock" style="color:#22c55e;" aria-hidden="true"></i>
+              {{ trans('secure_checkout') }}
+            </p>
+          </div>
+
+        </aside>
+
+      </div>
+
+    {% else %}
+      {# Empty cart #}
+      <div class="text-center" style="padding:5rem 0;">
+        <i class="sicon-shopping-cart" style="font-size:4rem;color:var(--color-border);"></i>
+        <h2 style="font-size:1.25rem;font-weight:700;color:var(--color-primary);margin:1.25rem 0 .75rem;">
+          {{ trans('empty_cart') }}
+        </h2>
+        <p style="color:var(--color-text-muted);margin-bottom:1.75rem;">{{ trans('empty_cart_desc') }}</p>
+        <a href="{{ store.url }}/products" class="btn btn-accent btn-lg">
+          {{ trans('start_shopping') }}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{# ═══════════════════════════════════════════════
+   THANK YOU PAGE — KWD Theme
+   SEO: noindex (transactional page)
+═══════════════════════════════════════════════ #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+<div style="padding:4rem 0;min-height:60vh;">
+  <div class="container">
+    <div class="text-center" style="max-width:600px;margin:0 auto;">
+
+      <div style="width:80px;height:80px;border-radius:50%;background:rgba(34,197,94,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2.5rem;color:#22c55e;">
+        <i class="sicon-check-circle" aria-hidden="true"></i>
+      </div>
+
+      <h1 style="font-size:1.75rem;font-weight:700;color:var(--color-primary);margin-bottom:.75rem;">
+        {{ trans('thank_you_title') }}
+      </h1>
+      <p style="color:var(--color-text-muted);font-size:1.05rem;margin-bottom:2rem;line-height:1.7;">
+        {{ trans('thank_you_desc') }}
+      </p>
+
+      {% if order is defined %}
+        <div style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1.5rem;margin-bottom:2rem;text-align:start;">
+          <h2 style="font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--color-primary);">
+            {{ trans('order_details') }}
+          </h2>
+          <div class="summary-row"><span>{{ trans('order_number') }}:</span><span class="font-bold">#{{ order.reference_id }}</span></div>
+          <div class="summary-row"><span>{{ trans('order_date') }}:</span><span>{{ order.date | date('d/m/Y') }}</span></div>
+          <div class="summary-row"><span>{{ trans('payment_method') }}:</span><span>{{ order.payment_method }}</span></div>
+          <div class="summary-row total"><span>{{ trans('total') }}:</span><span>{{ order.total | money }}</span></div>
+        </div>
+      {% endif %}
+
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="{{ store.url }}/orders" class="btn btn-primary">
+          <i class="sicon-package" aria-hidden="true"></i>
+          {{ trans('my_orders') }}
+        </a>
+        <a href="{{ store.url }}/products" class="btn btn-outline">
+          {{ trans('continue_shopping') }}
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

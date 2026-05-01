@@ -1,0 +1,18 @@
+{# LOYALTY POINTS — KWD Theme #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container" style="max-width:760px;">
+    <h1 style="font-size:1.25rem;font-weight:700;color:var(--color-primary);margin-bottom:1.5rem;">
+      {{ trans('loyalty_points') }}
+    </h1>
+    <salla-loyalty-points></salla-loyalty-points>
+  </div>
+</div>
+{% endblock %}

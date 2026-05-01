@@ -1,0 +1,39 @@
+{# PAGINATION — KWD Theme #}
+{% if page.pages > 1 %}
+<nav class="pagination" aria-label="{{ trans('pagination') }}" role="navigation">
+
+  {# Prev #}
+  <a
+    href="{{ page.prev_url | default('#') }}"
+    class="page-btn {% if not page.prev_url %}disabled{% endif %}"
+    {% if not page.prev_url %}aria-disabled="true"{% endif %}
+    aria-label="{{ trans('previous_page') }}"
+    rel="prev"
+  >
+    <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'right' : 'left' }}" aria-hidden="true"></i>
+  </a>
+
+  {# Page numbers #}
+  {% for p in 1..page.pages %}
+    {% if p == page.current %}
+      <span class="page-btn active" aria-current="page" aria-label="{{ trans('page') }} {{ p }}">{{ p }}</span>
+    {% elseif p == 1 or p == page.pages or (p >= page.current - 2 and p <= page.current + 2) %}
+      <a href="{{ page.url }}?page={{ p }}" class="page-btn" aria-label="{{ trans('page') }} {{ p }}">{{ p }}</a>
+    {% elseif p == page.current - 3 or p == page.current + 3 %}
+      <span class="page-btn disabled" aria-hidden="true">…</span>
+    {% endif %}
+  {% endfor %}
+
+  {# Next #}
+  <a
+    href="{{ page.next_url | default('#') }}"
+    class="page-btn {% if not page.next_url %}disabled{% endif %}"
+    {% if not page.next_url %}aria-disabled="true"{% endif %}
+    aria-label="{{ trans('next_page') }}"
+    rel="next"
+  >
+    <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+  </a>
+
+</nav>
+{% endif %}

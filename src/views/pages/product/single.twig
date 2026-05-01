@@ -1,0 +1,364 @@
+{# ═══════════════════════════════════════════════
+   SINGLE PRODUCT PAGE — KWD Theme
+   SEO: Product Schema, OpenGraph product,
+        BreadcrumbList, AggregateRating, Offer
+═══════════════════════════════════════════════ #}
+
+{% extends 'layouts/master.twig' %}
+
+{% set og_image = product.image.url | default(settings.seo_og_image | asset_url) %}
+
+{% block extra_head %}
+
+{# Open Graph — Product specific #}
+<meta property="og:type" content="product">
+<meta property="product:price:amount" content="{{ product.sale_price | default(product.price) }}">
+<meta property="product:price:currency" content="{{ store.currency.code }}">
+<meta property="product:availability" content="{{ product.is_available ? 'in stock' : 'out of stock' }}">
+
+{# ── Full Product Schema.org ── #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name | e('js') }}",
+  "url": "{{ product.url }}",
+  "description": "{{ product.description | striptags | truncate(500) | e('js') }}",
+  "image": [
+    {% for img in product.images | default([product.image]) %}
+      "{{ img.url }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+  "sku": "{{ product.sku | default(product.id) }}",
+  "mpn": "{{ product.mpn | default(product.id) }}",
+  {% if product.brand is defined and product.brand %}
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ product.brand.name | e('js') }}"
+  },
+  {% endif %}
+  {% if product.rating is defined and product.rating.count > 0 %}
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.rating.average }}",
+    "reviewCount": "{{ product.rating.count }}",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  {% endif %}
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ product.url }}",
+    "priceCurrency": "{{ store.currency.code }}",
+    "price": "{{ product.sale_price | default(product.price) }}",
+    "availability": "https://schema.org/{% if product.is_available %}InStock{% else %}OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": "{{ store.name }}"
+    }
+  }
+}
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+{# ── Single Product Layout ── #}
+<div class="product-single">
+  <div class="container">
+    <div class="product-single-inner">
+
+      {# ═══ LEFT: GALLERY ═══ #}
+      <div class="product-gallery">
+
+        {# Main image #}
+        <div class="gallery-main" id="gallery-main">
+          <img
+            id="main-product-img"
+            src="{{ product.image.url | default(settings.placeholder | asset_url) }}"
+            alt="{{ product.image.alt | default(product.name) }}"
+            width="600"
+            height="600"
+            loading="eager"
+            fetchpriority="high"
+            itemprop="image"
+          >
+        </div>
+
+        {# Thumbnails #}
+        {% if product.images is defined and product.images | length > 1 %}
+          <div class="gallery-thumbs" role="list" aria-label="{{ trans('product_images') }}">
+            {% for img in product.images %}
+              <button
+                class="thumb-item {% if loop.first %}active{% endif %}"
+                data-full="{{ img.url }}"
+                aria-label="{{ img.alt | default(product.name ~ ' - ' ~ trans('image') ~ ' ' ~ loop.index) }}"
+                role="listitem"
+              >
+                <img
+                  src="{{ img.url }}"
+                  alt="{{ img.alt | default(product.name) }}"
+                  width="68"
+                  height="68"
+                  loading="lazy"
+                >
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      </div>
+
+      {# ═══ RIGHT: DETAILS ═══ #}
+      <div class="product-details" itemscope itemtype="https://schema.org/Product">
+
+        {# Brand #}
+        {% if product.brand is defined and product.brand %}
+          <p class="product-details-brand" itemprop="brand" itemscope itemtype="https://schema.org/Brand">
+            <a href="{{ product.brand.url | default('#') }}" itemprop="url">
+              <span itemprop="name">{{ product.brand.name }}</span>
+            </a>
+          </p>
+        {% endif %}
+
+        {# Title (H1 — one per page) #}
+        <h1 class="product-details-title" itemprop="name">{{ product.name }}</h1>
+
+        {# Rating #}
+        {% if product.rating is defined and product.rating.count > 0 %}
+          <div class="product-details-rating">
+            <div class="stars" aria-label="{{ product.rating.average }}/5">
+              {% for i in 1..5 %}
+                {% if i <= product.rating.average %}
+                  <i class="sicon-star" aria-hidden="true" style="color:#fbbf24;"></i>
+                {% elseif i - product.rating.average < 1 %}
+                  <i class="sicon-star-half" aria-hidden="true" style="color:#fbbf24;"></i>
+                {% else %}
+                  <i class="sicon-star" aria-hidden="true" style="color:#dee2e6;"></i>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <a href="#product-reviews" class="rating-link">
+              {{ product.rating.average }} ({{ product.rating.count }} {{ trans('reviews') }})
+            </a>
+          </div>
+        {% endif %}
+
+        {# Price #}
+        <div class="product-details-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+          <meta itemprop="priceCurrency" content="{{ store.currency.code }}">
+          <link itemprop="availability" href="https://schema.org/{% if product.is_available %}InStock{% else %}OutOfStock{% endif %}">
+
+          {% if product.sale_price and product.sale_price < product.price %}
+            <span class="price-large" itemprop="price" content="{{ product.sale_price }}">
+              {{ product.sale_price | money }}
+            </span>
+            <span class="price-old-large">{{ product.price | money }}</span>
+            <span class="price-save">
+              {{ trans('save') }} {{ ((product.price - product.sale_price) / product.price * 100) | round }}%
+            </span>
+          {% else %}
+            <span class="price-large" itemprop="price" content="{{ product.price }}">
+              {{ product.price | money }}
+            </span>
+          {% endif %}
+          <span class="price-vat">{{ trans('vat_included') }}</span>
+        </div>
+
+        {# Short description #}
+        {% if product.short_description is defined and product.short_description %}
+          <div class="product-short-desc" style="font-size:.9rem;color:var(--color-text-muted);line-height:1.7;margin-bottom:1.25rem;" itemprop="description">
+            {{ product.short_description | raw }}
+          </div>
+        {% endif %}
+
+        {# Product Options via Salla Web Component #}
+        <salla-product-options product-id="{{ product.id }}"></salla-product-options>
+
+        {# Quantity + Add to Cart #}
+        <div class="product-add-row">
+
+          {# Quantity #}
+          <div class="product-option-group" style="flex-shrink:0;">
+            <span class="option-label">{{ trans('quantity') }}</span>
+            <div class="qty-selector" aria-label="{{ trans('quantity') }}">
+              <button class="qty-btn" data-qty="minus" aria-label="{{ trans('decrease_qty') }}">−</button>
+              <input
+                class="qty-input"
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                max="{{ product.quantity | default(999) }}"
+                aria-label="{{ trans('quantity') }}"
+              >
+              <button class="qty-btn" data-qty="plus" aria-label="{{ trans('increase_qty') }}">+</button>
+            </div>
+          </div>
+
+          {# Add to Cart #}
+          {% if product.is_available %}
+            <salla-add-to-cart
+              product-id="{{ product.id }}"
+              class="btn btn-accent btn-lg"
+              style="flex:1;"
+              data-add-cart
+              data-product-id="{{ product.id }}"
+              data-product-name="{{ product.name | e('html_attr') }}"
+              data-price="{{ product.sale_price | default(product.price) }}"
+              data-currency="{{ store.currency.code }}"
+            >
+              <i class="sicon-shopping-cart" aria-hidden="true"></i>
+              {{ trans('add_to_cart') }}
+            </salla-add-to-cart>
+          {% else %}
+            <button class="btn btn-outline btn-lg" style="flex:1;" disabled>
+              {{ trans('sold_out') }}
+            </button>
+          {% endif %}
+
+          {# Wishlist #}
+          {% if settings.enable_wishlist %}
+            <salla-button
+              class="btn-wishlist"
+              data-wishlist
+              data-product-id="{{ product.id }}"
+              aria-label="{{ trans('add_to_wishlist') }}"
+              title="{{ trans('add_to_wishlist') }}"
+            >
+              <i class="sicon-heart" aria-hidden="true"></i>
+            </salla-button>
+          {% endif %}
+
+          {# Compare #}
+          {% if settings.enable_compare %}
+            <button
+              class="btn-compare"
+              data-compare
+              data-product-id="{{ product.id }}"
+              aria-label="{{ trans('compare') }}"
+              title="{{ trans('compare') }}"
+            >
+              <i class="sicon-shuffle" aria-hidden="true"></i>
+            </button>
+          {% endif %}
+
+        </div>
+
+        {# Share #}
+        <salla-social-share url="{{ product.url }}" title="{{ product.name }}" style="margin-top:1rem;display:block;"></salla-social-share>
+
+        {# Meta (SKU, availability) #}
+        <div class="product-meta">
+          {% if product.sku %}
+            <div class="product-meta-item">
+              <span class="meta-key">{{ trans('sku') }}:</span>
+              <span class="meta-value" itemprop="sku">{{ product.sku }}</span>
+            </div>
+          {% endif %}
+          <div class="product-meta-item">
+            <span class="meta-key">{{ trans('availability') }}:</span>
+            <span class="meta-value" style="color:{{ product.is_available ? '#22c55e' : '#ef4444' }};">
+              {{ product.is_available ? trans('in_stock') : trans('out_of_stock') }}
+            </span>
+          </div>
+          {% if product.category is defined and product.category %}
+            <div class="product-meta-item">
+              <span class="meta-key">{{ trans('category') }}:</span>
+              <a href="{{ product.category.url }}" class="meta-value">{{ product.category.name }}</a>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+
+    </div>
+
+    {# ═══ PRODUCT TABS ═══ #}
+    <div class="product-tabs">
+      <div class="tab-list" role="tablist" aria-label="{{ trans('product_info') }}">
+        <button class="tab-btn active" data-tab="description" role="tab" aria-selected="true" id="tab-desc">
+          {{ trans('description') }}
+        </button>
+        {% if product.attributes is defined and product.attributes | length %}
+          <button class="tab-btn" data-tab="attributes" role="tab" aria-selected="false" id="tab-attr">
+            {{ trans('specifications') }}
+          </button>
+        {% endif %}
+        {% if product.rating is defined %}
+          <button class="tab-btn" data-tab="reviews" role="tab" aria-selected="false" id="tab-rev">
+            {{ trans('reviews') }}
+            {% if product.rating.count > 0 %}({{ product.rating.count }}){% endif %}
+          </button>
+        {% endif %}
+        <button class="tab-btn" data-tab="shipping" role="tab" aria-selected="false" id="tab-ship">
+          {{ trans('shipping_return') }}
+        </button>
+      </div>
+
+      {# Description #}
+      <div class="tab-panel active" data-tab="description" role="tabpanel" aria-labelledby="tab-desc" itemprop="description">
+        {% if product.description %}
+          <div class="prose" style="max-width:none;line-height:1.8;color:var(--color-text);">
+            {{ product.description | raw }}
+          </div>
+        {% else %}
+          <p class="text-muted">{{ trans('no_description') }}</p>
+        {% endif %}
+      </div>
+
+      {# Specifications #}
+      {% if product.attributes is defined and product.attributes | length %}
+        <div class="tab-panel" data-tab="attributes" role="tabpanel" aria-labelledby="tab-attr">
+          <table style="width:100%;border-collapse:collapse;font-size:.9rem;">
+            {% for attr in product.attributes %}
+              <tr style="border-bottom:1px solid var(--color-border);">
+                <td style="padding:.65rem 1rem;width:35%;background:var(--color-surface);font-weight:600;color:var(--color-primary);">
+                  {{ attr.name }}
+                </td>
+                <td style="padding:.65rem 1rem;color:var(--color-text);">
+                  {{ attr.value }}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      {% endif %}
+
+      {# Reviews #}
+      <div class="tab-panel" data-tab="reviews" role="tabpanel" aria-labelledby="tab-rev" id="product-reviews">
+        <salla-rating-stars product-id="{{ product.id }}"></salla-rating-stars>
+        {% include 'components/comments.twig' %}
+      </div>
+
+      {# Shipping #}
+      <div class="tab-panel" data-tab="shipping" role="tabpanel" aria-labelledby="tab-ship">
+        <div style="max-width:600px;">
+          <h3 style="font-weight:700;margin-bottom:.75rem;">{{ trans('shipping_info') }}</h3>
+          <p style="color:var(--color-text-muted);line-height:1.8;margin-bottom:1.25rem;">{{ trans('shipping_details') }}</p>
+          <h3 style="font-weight:700;margin-bottom:.75rem;">{{ trans('return_policy') }}</h3>
+          <p style="color:var(--color-text-muted);line-height:1.8;">{{ trans('return_details') }}</p>
+        </div>
+      </div>
+
+    </div>
+
+    {# ═══ RELATED PRODUCTS ═══ #}
+    {% if product.related is defined and product.related | length %}
+      <section class="section" aria-labelledby="related-heading" style="border-top:1px solid var(--color-border);margin-top:3rem;">
+        <header class="section-header">
+          <h2 class="section-title" id="related-heading">{{ trans('related_products') }}</h2>
+        </header>
+        <div class="products-grid products-grid-4">
+          {% for related in product.related | slice(0, 4) %}
+            {% include 'components/product-card.twig' with { product: related } %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

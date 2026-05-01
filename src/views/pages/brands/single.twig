@@ -1,0 +1,48 @@
+{# SINGLE BRAND — KWD Theme #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Brand",
+  "name": "{{ brand.name | e('js') }}",
+  "url": "{{ brand.url }}",
+  "image": "{{ brand.logo | default(settings.seo_og_image | asset_url) }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container">
+
+    {# Brand header #}
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--color-border);">
+      {% if brand.logo %}
+        <img src="{{ brand.logo }}" alt="{{ brand.name }}" height="70" style="height:70px;object-fit:contain;">
+      {% endif %}
+      <div>
+        <h1 style="font-size:1.5rem;font-weight:700;color:var(--color-primary);">{{ brand.name }}</h1>
+        {% if brand.description %}
+          <p style="color:var(--color-text-muted);margin-top:.4rem;">{{ brand.description }}</p>
+        {% endif %}
+        <p style="color:var(--color-text-muted);font-size:.85rem;margin-top:.25rem;">
+          {{ brand.products_count }} {{ trans('products') }}
+        </p>
+      </div>
+    </div>
+
+    {# Products #}
+    <div class="products-grid products-grid-4">
+      {% for product in products %}
+        {% include 'components/product-card.twig' with { product: product } %}
+      {% endfor %}
+    </div>
+
+    {% if page.pages > 1 %}{% include 'components/pagination.twig' %}{% endif %}
+
+  </div>
+</div>
+{% endblock %}

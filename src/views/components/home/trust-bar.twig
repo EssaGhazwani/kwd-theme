@@ -1,0 +1,29 @@
+{# ═══════════════════════════════════════════════
+   TRUST BAR COMPONENT
+   Custom home component: trust-badges
+═══════════════════════════════════════════════ #}
+
+{% set badges = data.settings.badges | default([
+  { icon: 'sicon-truck',          title: trans('free_shipping_title'),   description: trans('free_shipping_desc') },
+  { icon: 'sicon-rotate-ccw',     title: trans('easy_return_title'),     description: trans('easy_return_desc') },
+  { icon: 'sicon-shield',         title: trans('secure_payment_title'),  description: trans('secure_payment_desc') },
+  { icon: 'sicon-headphones',     title: trans('support_title'),         description: trans('support_desc') }
+]) %}
+
+<aside class="trust-bar" aria-label="{{ trans('store_features') }}">
+  <div class="container">
+    <ul class="trust-list" role="list">
+      {% for badge in badges %}
+        <li class="trust-item">
+          <i class="{{ badge.icon }}" class="trust-icon" aria-hidden="true" style="font-size:1.6rem;color:var(--color-accent);"></i>
+          <div>
+            <div class="trust-item-title">{{ badge.title }}</div>
+            {% if badge.description %}
+              <div class="trust-item-desc">{{ badge.description }}</div>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</aside>

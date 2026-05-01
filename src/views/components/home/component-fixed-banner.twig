@@ -1,0 +1,24 @@
+{# FIXED BANNER — KWD Theme #}
+{% if data.settings.image %}
+<section class="section-banner" style="position:relative;overflow:hidden;border-radius:var(--radius-lg);margin:0 auto;max-width:1200px;">
+  <img
+    src="{{ data.settings.image }}"
+    alt="{{ data.settings.title | default('') }}"
+    style="width:100%;display:block;object-fit:cover;max-height:400px;"
+    loading="lazy"
+  >
+  {% if data.settings.title or data.settings.btn_text %}
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:2rem;text-align:center;">
+      {% if data.settings.title %}
+        <h2 style="color:#fff;font-size:clamp(1.25rem,3vw,2rem);font-weight:700;margin-bottom:.5rem;">{{ data.settings.title }}</h2>
+      {% endif %}
+      {% if data.settings.subtitle %}
+        <p style="color:rgba(255,255,255,.85);margin-bottom:1rem;">{{ data.settings.subtitle }}</p>
+      {% endif %}
+      {% if data.settings.btn_text and data.settings.btn_url %}
+        <a href="{{ data.settings.btn_url }}" class="btn btn-accent">{{ data.settings.btn_text }}</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+{% endif %}

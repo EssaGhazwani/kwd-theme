@@ -1,0 +1,34 @@
+{# CMS PAGE — KWD Theme (e.g., About, Contact, FAQ) #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{ page.title | e('js') }}",
+  "url": "{{ page.url }}",
+  "description": "{{ page.description | striptags | truncate(160) | e('js') }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container" style="max-width:900px;">
+
+    <h1 style="font-size:1.75rem;font-weight:700;color:var(--color-primary);margin-bottom:1.75rem;">
+      {{ page.title }}
+    </h1>
+
+    <div
+      class="prose"
+      style="line-height:1.9;font-size:1rem;color:var(--color-text);"
+    >
+      {{ page.content | raw }}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

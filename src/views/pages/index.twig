@@ -1,0 +1,110 @@
+{# ═══════════════════════════════════════════════
+   HOME PAGE — KWD Theme
+   SEO: Schema WebPage, ItemList for products
+   Page: index.twig
+═══════════════════════════════════════════════ #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+{# HomePage Schema #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "{{ store.url }}#webpage",
+  "url": "{{ store.url }}",
+  "name": "{{ store.name }}",
+  "isPartOf": { "@type": "WebSite", "url": "{{ store.url }}" },
+  "about": { "@type": "Thing", "name": "{{ store.name }}" },
+  "description": "{{ settings.seo_default_description }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+{# ═══ 1. HERO COMPONENTS (from Salla CMS) ═══ #}
+{% for component in page.content %}
+  {% if component.type == 'hero-slider' %}
+    {% include 'components/home/hero-slider.twig' with { data: component } %}
+  {% elseif component.type == 'component-photos-slider' %}
+    {% include 'components/home/component-photos-slider.twig' with { data: component } %}
+  {% elseif component.type == 'component-enhanced-slider' %}
+    {% include 'components/home/component-enhanced-slider.twig' with { data: component } %}
+  {% endif %}
+{% endfor %}
+
+{# ═══ 2. TRUST BAR ═══ #}
+{% include 'components/home/trust-bar.twig' %}
+
+{# ═══ 3. CATEGORIES GRID ═══ #}
+{% if store.categories is defined and store.categories | length %}
+  {% include 'components/home/categories-grid.twig' %}
+{% endif %}
+
+{# ═══ 4. FEATURED / PRODUCT COMPONENTS (from Salla CMS) ═══ #}
+{% for component in page.content %}
+  {% if component.type == 'component-featured-products' %}
+    {% include 'components/home/component-featured-products.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-products-slider' %}
+    {% include 'components/home/component-products-slider.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-latest-products' %}
+    {% include 'components/home/component-latest-products.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-fixed-products' %}
+    {% include 'components/home/component-fixed-products.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-fixed-banner' %}
+    {% include 'components/home/component-fixed-banner.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-store-features' %}
+    {% include 'components/home/component-store-features.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-testimonials' or component.type == 'component-random-testimonials' %}
+    {% include 'components/home/component-testimonials.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-brands' %}
+    {% include 'components/home/component-brands.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-youtube' %}
+    {% include 'components/home/component-youtube.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-square-photos' or component.type == 'component-enhanced-square-banners' %}
+    {% include 'components/home/component-square-photos.twig' with { data: component } %}
+
+  {% elseif component.type == 'component-main-links' %}
+    {% include 'components/home/component-main-links.twig' with { data: component } %}
+
+  {% elseif component.type == 'categories-grid' %}
+    {% include 'components/home/categories-grid.twig' with { data: component } %}
+
+  {% elseif component.type == 'trust-badges' %}
+    {% include 'components/home/trust-bar.twig' with { data: component } %}
+  {% endif %}
+{% endfor %}
+
+{# ═══ 5. RECENT BLOG POSTS ═══ #}
+{% if page.blog_posts is defined and page.blog_posts | length %}
+<section class="section blog-preview-section" aria-labelledby="blog-section-title">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label">{{ trans('blog') }}</span>
+      <h2 class="section-title" id="blog-section-title">{{ trans('latest_articles') }}</h2>
+      <a href="{{ store.url }}/blog" class="section-link">
+        {{ trans('view_all_articles') }} <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+      </a>
+    </header>
+
+    <div class="blog-grid">
+      {% for post in page.blog_posts | slice(0, 3) %}
+        {% include 'components/blog-card.twig' with { post: post } %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

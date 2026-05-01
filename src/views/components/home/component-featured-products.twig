@@ -1,0 +1,53 @@
+{# ═══════════════════════════════════════════════
+   FEATURED PRODUCTS COMPONENT
+   SEO: ItemList Schema for product lists
+═══════════════════════════════════════════════ #}
+
+{% set products = data.products | default([]) %}
+{% set title    = data.settings.title | default(trans('featured_products')) %}
+{% set subtitle = data.settings.subtitle | default('') %}
+
+{% if products | length %}
+<section class="section featured-products-section" aria-labelledby="featured-heading">
+  <div class="container">
+
+    <header class="section-header">
+      <span class="section-label">{{ trans('featured') }}</span>
+      <h2 class="section-title" id="featured-heading">{{ title }}</h2>
+      {% if subtitle %}
+        <p class="section-subtitle">{{ subtitle }}</p>
+      {% endif %}
+      <a href="{{ store.url }}/products" class="section-link">
+        {{ trans('view_all') }}
+        <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+      </a>
+    </header>
+
+    {# Schema.org ItemList #}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "{{ title }}",
+      "itemListElement": [
+        {% for product in products %}
+        {
+          "@type": "ListItem",
+          "position": {{ loop.index }},
+          "url": "{{ product.url }}",
+          "name": "{{ product.name | e('js') }}"
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+    </script>
+
+    <div class="products-grid products-grid-4">
+      {% for product in products %}
+        {% include 'components/product-card.twig' with { product: product } %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}

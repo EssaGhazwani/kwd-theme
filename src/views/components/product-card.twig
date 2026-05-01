@@ -1,0 +1,152 @@
+{# ═══════════════════════════════════════════════
+   PRODUCT CARD COMPONENT — reusable
+   Used on: home, listing, related products
+   SEO: itemprop Product microdata
+═══════════════════════════════════════════════ #}
+
+<article
+  class="product-card"
+  itemprop="itemListElement"
+  itemscope
+  itemtype="https://schema.org/Product"
+  data-product-id="{{ product.id }}"
+>
+
+  {# ── Thumbnail ── #}
+  <div class="product-thumb">
+    <a href="{{ product.url }}" aria-label="{{ product.name }}" tabindex="-1">
+      <img
+        {% if settings.lazy_load_images %}
+          data-src="{{ product.image.url | default(settings.placeholder | asset_url) }}"
+          src="{{ 'images/img_placeholder.png' | asset_url }}"
+        {% else %}
+          src="{{ product.image.url | default(settings.placeholder | asset_url) }}"
+        {% endif %}
+        alt="{{ product.image.alt | default(product.name) }}"
+        width="400"
+        height="400"
+        loading="lazy"
+        itemprop="image"
+      >
+    </a>
+
+    {# Badges #}
+    <div class="product-badges">
+      {% if product.is_new %}<span class="badge-pill badge-new">{{ trans('new') }}</span>{% endif %}
+      {% if product.sale_price and product.price > product.sale_price %}
+        <span class="badge-pill badge-sale">
+          -{{ ((product.price - product.sale_price) / product.price * 100) | round }}%
+        </span>
+      {% endif %}
+      {% if product.is_hot %}<span class="badge-pill badge-hot">{{ trans('hot') }}</span>{% endif %}
+      {% if not product.is_available %}<span class="badge-pill badge-sold">{{ trans('sold_out') }}</span>{% endif %}
+    </div>
+
+    {# Quick actions #}
+    <div class="product-actions">
+      {% if settings.enable_wishlist %}
+        <salla-button
+          class="product-action-btn"
+          data-wishlist
+          data-product-id="{{ product.id }}"
+          title="{{ trans('add_to_wishlist') }}"
+          aria-label="{{ trans('add_to_wishlist') }}"
+        >
+          <i class="sicon-heart" aria-hidden="true"></i>
+        </salla-button>
+      {% endif %}
+      {% if settings.enable_compare %}
+        <button
+          class="product-action-btn"
+          data-compare
+          data-product-id="{{ product.id }}"
+          title="{{ trans('compare') }}"
+          aria-label="{{ trans('compare') }}"
+        >
+          <i class="sicon-shuffle" aria-hidden="true"></i>
+        </button>
+      {% endif %}
+      <a
+        href="{{ product.url }}"
+        class="product-action-btn"
+        title="{{ trans('quick_view') }}"
+        aria-label="{{ trans('quick_view') }}: {{ product.name }}"
+      >
+        <i class="sicon-eye" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+
+  {# ── Info ── #}
+  <div class="product-info">
+
+    {# Brand #}
+    {% if product.brand is defined and product.brand %}
+      <p class="product-brand" itemprop="brand" itemscope itemtype="https://schema.org/Brand">
+        <span itemprop="name">{{ product.brand.name }}</span>
+      </p>
+    {% endif %}
+
+    {# Name #}
+    <h3 class="product-name" itemprop="name">
+      <a href="{{ product.url }}" itemprop="url">{{ product.name }}</a>
+    </h3>
+
+    {# Rating #}
+    {% if product.rating is defined and product.rating.count > 0 %}
+      <div class="product-rating" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+        <div class="stars" aria-label="{{ product.rating.average }}/5">
+          {% for i in 1..5 %}
+            <i class="sicon-star{% if i > product.rating.average %}-o{% endif %}" aria-hidden="true"></i>
+          {% endfor %}
+        </div>
+        <span class="rating-count" itemprop="reviewCount">({{ product.rating.count }})</span>
+        <meta itemprop="ratingValue" content="{{ product.rating.average }}">
+        <meta itemprop="bestRating"  content="5">
+      </div>
+    {% endif %}
+
+    {# Price #}
+    <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+      <meta itemprop="priceCurrency" content="{{ store.currency.code }}">
+      <link itemprop="availability" href="https://schema.org/{% if product.is_available %}InStock{% else %}OutOfStock{% endif %}">
+      <link itemprop="url" href="{{ product.url }}">
+
+      {% if product.sale_price and product.sale_price < product.price %}
+        <span class="price-current" itemprop="price" content="{{ product.sale_price }}">
+          {{ product.sale_price | money }}
+        </span>
+        <span class="price-old">{{ product.price | money }}</span>
+        <span class="price-discount">
+          -{{ ((product.price - product.sale_price) / product.price * 100) | round }}%
+        </span>
+      {% else %}
+        <span class="price-current" itemprop="price" content="{{ product.price }}">
+          {{ product.price | money }}
+        </span>
+      {% endif %}
+    </div>
+
+    {# Add to Cart #}
+    {% if product.is_available %}
+      <salla-add-to-cart
+        product-id="{{ product.id }}"
+        class="btn-add-cart"
+        data-add-cart
+        data-product-id="{{ product.id }}"
+        data-product-name="{{ product.name | e('html_attr') }}"
+        data-price="{{ product.sale_price | default(product.price) }}"
+        data-currency="{{ store.currency.code }}"
+      >
+        <i class="sicon-shopping-cart" aria-hidden="true"></i>
+        {{ trans('add_to_cart') }}
+      </salla-add-to-cart>
+    {% else %}
+      <button class="btn-add-cart" disabled aria-label="{{ trans('sold_out') }}">
+        {{ trans('sold_out') }}
+      </button>
+    {% endif %}
+
+  </div>
+
+</article>

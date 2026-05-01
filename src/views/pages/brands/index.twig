@@ -1,0 +1,38 @@
+{# BRANDS LISTING — KWD Theme #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{{ page.title | default(trans('brands')) }}",
+  "url": "{{ page.url }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container">
+    <header class="section-header">
+      <h1 class="section-title">{{ page.title | default(trans('brands')) }}</h1>
+    </header>
+
+    <div class="grid-4" style="gap:1.25rem;">
+      {% for brand in brands %}
+        <a href="{{ brand.url }}" class="category-card" aria-label="{{ brand.name }}" style="gap:.5rem;">
+          {% if brand.logo %}
+            <img src="{{ brand.logo }}" alt="{{ brand.name }}" width="100" height="50" loading="lazy" style="height:50px;object-fit:contain;">
+          {% else %}
+            <span class="font-bold" style="font-size:1rem;">{{ brand.name }}</span>
+          {% endif %}
+          <span style="font-size:.78rem;color:var(--color-text-muted);">{{ brand.products_count }} {{ trans('products') }}</span>
+        </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

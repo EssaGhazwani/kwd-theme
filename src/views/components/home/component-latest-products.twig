@@ -1,0 +1,15 @@
+{# LATEST PRODUCTS — KWD Theme #}
+<section class="section" aria-labelledby="latest-heading">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label">{{ trans('new') }}</span>
+      <h2 class="section-title" id="latest-heading">{{ data.settings.title | default(trans('latest_products')) }}</h2>
+      <a href="{{ store.url }}/products?sort=newest" class="section-link">{{ trans('view_all') }}</a>
+    </header>
+    <div class="products-grid products-grid-4">
+      {% for product in data.products | default([]) | slice(0, 8) %}
+        {% include 'components/product-card.twig' with { product: product } %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

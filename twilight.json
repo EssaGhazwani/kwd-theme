@@ -1,0 +1,283 @@
+{
+  "version": "1.0.0",
+  "theme_name": "KWD",
+  "repo_url": "https://github.com/kwdstore/kwd-theme",
+  "support_url": "https://kwdstore.com",
+  "settings": [
+    {
+      "type": "boolean",
+      "label": "الشريط العلوي داكن",
+      "id": "topnav_is_dark",
+      "format": "switch",
+      "selected": false
+    },
+    {
+      "type": "string",
+      "id": "placeholder",
+      "format": "hidden",
+      "value": "images/img_placeholder.png"
+    },
+    {
+      "type": "string",
+      "label": "اللون الرئيسي",
+      "id": "primary_color",
+      "format": "color",
+      "value": "#1a1a2e"
+    },
+    {
+      "type": "string",
+      "label": "اللون الثانوي",
+      "id": "accent_color",
+      "format": "color",
+      "value": "#e94560"
+    },
+    {
+      "type": "boolean",
+      "label": "إظهار شريط الإعلانات العلوي",
+      "id": "show_announcement_bar",
+      "format": "switch",
+      "selected": true
+    },
+    {
+      "type": "string",
+      "label": "نص الإعلان",
+      "id": "announcement_text",
+      "format": "text",
+      "value": "شحن مجاني على الطلبات فوق 200 ريال"
+    },
+    {
+      "type": "boolean",
+      "label": "تفعيل نافذة اشتراك النيوزلتر",
+      "id": "show_newsletter",
+      "format": "switch",
+      "selected": true
+    },
+    {
+      "type": "string",
+      "label": "نص Meta الافتراضي (وصف الموقع)",
+      "id": "seo_default_description",
+      "format": "textarea",
+      "value": "متجر KWD - تسوق أفضل المنتجات بأسعار مناسبة. شحن سريع وخدمة عملاء متميزة."
+    },
+    {
+      "type": "string",
+      "label": "كلمات مفتاحية افتراضية للـ SEO",
+      "id": "seo_default_keywords",
+      "format": "text",
+      "value": "متجر إلكتروني, تسوق, KWD, kwdstore"
+    },
+    {
+      "type": "string",
+      "label": "رابط صورة الـ OG الافتراضية",
+      "id": "seo_og_image",
+      "format": "image",
+      "value": "images/og-default.jpg"
+    },
+    {
+      "type": "boolean",
+      "label": "إظهار تقييم المنتجات في نتائج البحث (Schema)",
+      "id": "seo_product_schema",
+      "format": "switch",
+      "selected": true
+    },
+    {
+      "type": "boolean",
+      "label": "إظهار أداة Breadcrumb",
+      "id": "show_breadcrumb",
+      "format": "switch",
+      "selected": true
+    },
+    {
+      "type": "boolean",
+      "label": "تفعيل Lazy Load للصور",
+      "id": "lazy_load_images",
+      "format": "switch",
+      "selected": true
+    },
+    {
+      "type": "string",
+      "label": "Google Tag Manager ID",
+      "id": "gtm_id",
+      "format": "text",
+      "value": ""
+    },
+    {
+      "type": "string",
+      "label": "Facebook Pixel ID",
+      "id": "fb_pixel_id",
+      "format": "text",
+      "value": ""
+    },
+    {
+      "type": "string",
+      "label": "Google Site Verification",
+      "id": "google_site_verification",
+      "format": "text",
+      "value": ""
+    },
+    {
+      "type": "string",
+      "label": "Bing Site Verification",
+      "id": "bing_site_verification",
+      "format": "text",
+      "value": ""
+    },
+    {
+      "type": "boolean",
+      "label": "تفعيل زر المقارنة",
+      "id": "enable_compare",
+      "format": "switch",
+      "selected": true
+    },
+    {
+      "type": "boolean",
+      "label": "تفعيل قائمة الرغبات",
+      "id": "enable_wishlist",
+      "format": "switch",
+      "selected": true
+    },
+    {
+      "type": "string",
+      "label": "نص copyright",
+      "id": "footer_copyright",
+      "format": "text",
+      "value": "© 2025 KWD Store. جميع الحقوق محفوظة."
+    }
+  ],
+  "features": [
+    "component-featured-products",
+    "component-fixed-banner",
+    "component-fixed-products",
+    "component-photos-slider",
+    "component-products-slider",
+    "component-parallax-background",
+    "component-random-testimonials",
+    "component-testimonials",
+    "component-square-photos",
+    "component-store-features",
+    "component-youtube",
+    "component-enhanced-square-banners",
+    "component-enhanced-slider",
+    "component-main-links",
+    "component-brands",
+    "component-latest-products",
+    "filters"
+  ],
+  "components": [
+    {
+      "name": "hero-slider",
+      "title": "سلايدر رئيسي متقدم",
+      "icon": "sicon-image-carousel",
+      "path": "home.hero-slider",
+      "fields": [
+        {
+          "id": "slides",
+          "type": "collection",
+          "format": "collection",
+          "required": true,
+          "minLength": 1,
+          "maxLength": 6,
+          "fields": [
+            {
+              "id": "image",
+              "type": "string",
+              "format": "image",
+              "label": "صورة الخلفية"
+            },
+            {
+              "id": "title",
+              "type": "string",
+              "label": "العنوان الرئيسي"
+            },
+            {
+              "id": "subtitle",
+              "type": "string",
+              "format": "textarea",
+              "label": "النص التوضيحي"
+            },
+            {
+              "id": "btn_text",
+              "type": "string",
+              "label": "نص الزر"
+            },
+            {
+              "id": "btn_url",
+              "type": "string",
+              "label": "رابط الزر"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "categories-grid",
+      "title": "شبكة الفئات",
+      "icon": "sicon-grid",
+      "path": "home.categories-grid",
+      "fields": [
+        {
+          "id": "title",
+          "type": "string",
+          "label": "عنوان القسم"
+        },
+        {
+          "id": "categories",
+          "type": "collection",
+          "format": "collection",
+          "minLength": 2,
+          "maxLength": 8,
+          "fields": [
+            {
+              "id": "image",
+              "type": "string",
+              "format": "image",
+              "label": "صورة الفئة"
+            },
+            {
+              "id": "name",
+              "type": "string",
+              "label": "اسم الفئة"
+            },
+            {
+              "id": "url",
+              "type": "string",
+              "label": "رابط الفئة"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "trust-badges",
+      "title": "شارات الثقة",
+      "icon": "sicon-shield",
+      "path": "home.trust-badges",
+      "fields": [
+        {
+          "id": "badges",
+          "type": "collection",
+          "format": "collection",
+          "minLength": 2,
+          "maxLength": 6,
+          "fields": [
+            {
+              "id": "icon",
+              "type": "string",
+              "label": "أيقونة (Salla icon name)"
+            },
+            {
+              "id": "title",
+              "type": "string",
+              "label": "العنوان"
+            },
+            {
+              "id": "description",
+              "type": "string",
+              "label": "الوصف"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

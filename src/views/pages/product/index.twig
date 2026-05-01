@@ -1,0 +1,188 @@
+{# ═══════════════════════════════════════════════
+   PRODUCTS LISTING PAGE — KWD Theme
+   SEO: CollectionPage Schema, pagination rel
+═══════════════════════════════════════════════ #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+{# Pagination SEO #}
+{% if page.prev_url %}<link rel="prev" href="{{ page.prev_url }}">{% endif %}
+{% if page.next_url %}<link rel="next" href="{{ page.next_url }}">{% endif %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{{ page.title | default(trans('all_products')) }}",
+  "url": "{{ page.url }}",
+  "description": "{{ page.description | default(settings.seo_default_description) | striptags | truncate(160) }}",
+  "isPartOf": { "@type": "WebSite", "url": "{{ store.url }}" }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="listing-layout">
+
+    {# ═══ FILTER SIDEBAR ═══ #}
+    <aside class="filter-sidebar" id="filter-sidebar" aria-label="{{ trans('filters') }}">
+
+      {# ── Active filters ── #}
+      {% if page.active_filters is defined and page.active_filters | length %}
+        <div class="filter-group">
+          <div class="filter-title">{{ trans('active_filters') }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+            {% for f in page.active_filters %}
+              <a href="{{ f.remove_url }}" class="badge-pill badge-sale" style="display:inline-flex;align-items:center;gap:.3rem;">
+                {{ f.label }} <i class="sicon-close" style="font-size:.7rem;"></i>
+              </a>
+            {% endfor %}
+            <a href="{{ page.clear_filters_url }}" class="section-link" style="margin:0;">{{ trans('clear_all') }}</a>
+          </div>
+        </div>
+      {% endif %}
+
+      {# ── Categories ── #}
+      {% if page.sub_categories is defined and page.sub_categories | length %}
+        <div class="filter-group">
+          <div class="filter-title" role="button" aria-expanded="true">
+            {{ trans('categories') }}
+            <i class="sicon-chevron-down filter-toggle-icon" aria-hidden="true" style="transition:transform .2s;"></i>
+          </div>
+          <div class="filter-options" style="flex-direction:column;">
+            {% for cat in page.sub_categories %}
+              <a
+                href="{{ cat.url }}"
+                class="filter-option"
+                {% if cat.active %}aria-current="true" style="color:var(--color-accent);font-weight:600;"{% endif %}
+              >
+                <span>{{ cat.name }}</span>
+                {% if cat.products_count is defined %}
+                  <span class="filter-count">{{ cat.products_count }}</span>
+                {% endif %}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {# ── Brands ── #}
+      {% if page.brands is defined and page.brands | length %}
+        <div class="filter-group">
+          <div class="filter-title" role="button" aria-expanded="true">
+            {{ trans('brands') }}
+            <i class="sicon-chevron-down filter-toggle-icon" aria-hidden="true" style="transition:transform .2s;"></i>
+          </div>
+          <div class="filter-options" style="flex-direction:column;">
+            {% for brand in page.brands %}
+              <label class="filter-option">
+                <input
+                  type="checkbox"
+                  name="brand[]"
+                  value="{{ brand.id }}"
+                  {% if brand.checked %}checked{% endif %}
+                  onchange="window.location.href='{{ brand.url }}'"
+                >
+                <span>{{ brand.name }}</span>
+                <span class="filter-count">{{ brand.count }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {# ── Price Range ── #}
+      {% if page.price_range is defined %}
+        <div class="filter-group">
+          <div class="filter-title" role="button" aria-expanded="true">
+            {{ trans('price') }}
+            <i class="sicon-chevron-down filter-toggle-icon" aria-hidden="true" style="transition:transform .2s;"></i>
+          </div>
+          <salla-price-filter
+            min="{{ page.price_range.min }}"
+            max="{{ page.price_range.max }}"
+            from="{{ page.price_range.from }}"
+            to="{{ page.price_range.to }}"
+          ></salla-price-filter>
+        </div>
+      {% endif %}
+
+    </aside>
+
+    {# ═══ PRODUCT GRID ═══ #}
+    <div class="listing-main">
+
+      {# ── Listing header ── #}
+      <div class="listing-header">
+        <h1 style="font-size:1.15rem;font-weight:700;color:var(--color-primary);">
+          {{ page.title | default(trans('all_products')) }}
+        </h1>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span class="result-count">
+            {{ page.total | default(products | length) }} {{ trans('products') }}
+          </span>
+
+          {# Sort #}
+          <label for="sort-select" class="sr-only">{{ trans('sort_by') }}</label>
+          <select
+            id="sort-select"
+            class="sort-select"
+            onchange="window.location.href=this.value"
+            aria-label="{{ trans('sort_by') }}"
+          >
+            <option value="{{ page.url }}?sort=newest"     {% if page.sort == 'newest'     %}selected{% endif %}>{{ trans('newest') }}</option>
+            <option value="{{ page.url }}?sort=price_asc"  {% if page.sort == 'price_asc'  %}selected{% endif %}>{{ trans('price_low_high') }}</option>
+            <option value="{{ page.url }}?sort=price_desc" {% if page.sort == 'price_desc' %}selected{% endif %}>{{ trans('price_high_low') }}</option>
+            <option value="{{ page.url }}?sort=best"       {% if page.sort == 'best'       %}selected{% endif %}>{{ trans('best_selling') }}</option>
+            <option value="{{ page.url }}?sort=rating"     {% if page.sort == 'rating'     %}selected{% endif %}>{{ trans('top_rated') }}</option>
+          </select>
+
+          {# Mobile filter button #}
+          <button
+            class="btn btn-outline btn-sm"
+            data-filter-toggle
+            aria-expanded="false"
+            aria-controls="filter-sidebar"
+            style="display:none;"
+            id="filter-toggle-btn"
+          >
+            <i class="sicon-sliders" aria-hidden="true"></i> {{ trans('filter') }}
+          </button>
+        </div>
+      </div>
+
+      {# ── Products ── #}
+      {% if products is defined and products | length %}
+        <div class="products-grid products-grid-3" role="list" aria-label="{{ trans('products') }}">
+          {% for product in products %}
+            {% include 'components/product-card.twig' with { product: product } %}
+          {% endfor %}
+        </div>
+
+        {# ── Pagination ── #}
+        {% if page.pages is defined and page.pages > 1 %}
+          {% include 'components/pagination.twig' %}
+        {% endif %}
+
+      {% else %}
+        <div class="text-center" style="padding:4rem 0;">
+          <i class="sicon-search" style="font-size:3rem;color:var(--color-border);"></i>
+          <h2 style="margin-top:1rem;font-size:1.1rem;color:var(--color-text-muted);">{{ trans('no_products') }}</h2>
+          <a href="{{ store.url }}/products" class="btn btn-accent mt-3">{{ trans('all_products') }}</a>
+        </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+</div>
+
+<style>
+  @media (max-width:991px) {
+    #filter-toggle-btn { display:flex !important; }
+  }
+</style>
+
+{% endblock %}

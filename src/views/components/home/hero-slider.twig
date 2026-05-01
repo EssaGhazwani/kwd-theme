@@ -1,0 +1,73 @@
+{# ═══════════════════════════════════════════════
+   HERO SLIDER COMPONENT
+   Custom home component: hero-slider
+═══════════════════════════════════════════════ #}
+
+{% set slides = data.settings.slides | default([]) %}
+
+{% if slides | length %}
+<section class="hero-slider" data-auto="true" aria-label="{{ trans('hero_slider') }}" role="region">
+
+  {# Slides #}
+  {% for slide in slides %}
+    <article class="hero-slide {% if loop.first %}active{% endif %}" aria-label="{{ slide.title | default('Slide ' ~ loop.index) }}">
+
+      {# Background image — first slide eager-loaded (LCP), rest lazy #}
+      {% if slide.image %}
+        <img
+          class="hero-bg"
+          src="{{ slide.image }}"
+          alt="{{ slide.title | default(store.name) }}"
+          loading="{{ loop.first ? 'eager' : 'lazy' }}"
+          fetchpriority="{{ loop.first ? 'high' : 'auto' }}"
+          width="1440"
+          height="600"
+        >
+      {% endif %}
+
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <div class="container">
+        <div class="hero-content">
+          {% if slide.title %}
+            <h1 class="hero-title">{{ slide.title }}</h1>
+          {% endif %}
+          {% if slide.subtitle %}
+            <p class="hero-subtitle">{{ slide.subtitle }}</p>
+          {% endif %}
+          {% if slide.btn_text and slide.btn_url %}
+            <a href="{{ slide.btn_url }}" class="hero-cta btn-rounded">
+              {{ slide.btn_text }}
+              <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+    </article>
+  {% endfor %}
+
+  {# Prev/Next #}
+  {% if slides | length > 1 %}
+    <button class="slider-arrow slider-arrow-prev" aria-label="{{ trans('previous_slide') }}">
+      <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'right' : 'left' }}" aria-hidden="true"></i>
+    </button>
+    <button class="slider-arrow slider-arrow-next" aria-label="{{ trans('next_slide') }}">
+      <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+    </button>
+
+    {# Dots #}
+    <div class="slider-controls" role="tablist" aria-label="{{ trans('slider_controls') }}">
+      {% for slide in slides %}
+        <button
+          class="slider-dot {% if loop.first %}active{% endif %}"
+          role="tab"
+          aria-selected="{{ loop.first ? 'true' : 'false' }}"
+          aria-label="{{ trans('go_to_slide') }} {{ loop.index }}"
+        ></button>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</section>
+{% endif %}

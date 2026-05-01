@@ -1,0 +1,18 @@
+{# CUSTOMER NOTIFICATIONS — KWD Theme #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container" style="max-width:720px;">
+    <h1 style="font-size:1.25rem;font-weight:700;color:var(--color-primary);margin-bottom:1.5rem;">
+      {{ trans('notifications') }}
+    </h1>
+    <salla-notifications></salla-notifications>
+  </div>
+</div>
+{% endblock %}

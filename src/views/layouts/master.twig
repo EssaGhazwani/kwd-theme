@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="{{ store.language.code }}" dir="{{ store.language.direction }}" prefix="og: https://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  {# ═══════════════════════════════════════════════
+     SEO: Title
+  ═══════════════════════════════════════════════ #}
+  <title>
+    {% if page.title is defined and page.title %}
+      {{ page.title }} | {{ store.name }}
+    {% else %}
+      {{ store.name }} - {{ settings.seo_default_description }}
+    {% endif %}
+  </title>
+
+  {# ═══════════════════════════════════════════════
+     SEO: Meta Description & Keywords
+  ═══════════════════════════════════════════════ #}
+  <meta name="description" content="{% if page.description is defined and page.description %}{{ page.description | striptags | truncate(160) }}{% else %}{{ settings.seo_default_description }}{% endif %}">
+  <meta name="keywords" content="{% if page.keywords is defined and page.keywords %}{{ page.keywords }}{% else %}{{ settings.seo_default_keywords }}{% endif %}">
+
+  {# ═══════════════════════════════════════════════
+     SEO: Robots
+  ═══════════════════════════════════════════════ #}
+  {% if page.noindex is defined and page.noindex %}
+    <meta name="robots" content="noindex, nofollow">
+  {% else %}
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     SEO: Canonical URL
+  ═══════════════════════════════════════════════ #}
+  <link rel="canonical" href="{{ page.url | default(store.url) }}">
+
+  {# ═══════════════════════════════════════════════
+     SEO: hreflang for multilingual
+  ═══════════════════════════════════════════════ #}
+  {% if store.languages is defined %}
+    {% for lang in store.languages %}
+      <link rel="alternate" hreflang="{{ lang.code }}" href="{{ lang.url }}">
+    {% endfor %}
+  {% endif %}
+  <link rel="alternate" hreflang="x-default" href="{{ store.url }}">
+
+  {# ═══════════════════════════════════════════════
+     SEO: Open Graph
+  ═══════════════════════════════════════════════ #}
+  <meta property="og:type" content="{% if page.type is defined %}{{ page.type }}{% else %}website{% endif %}">
+  <meta property="og:title" content="{% if page.title is defined and page.title %}{{ page.title }} | {{ store.name }}{% else %}{{ store.name }}{% endif %}">
+  <meta property="og:description" content="{% if page.description is defined and page.description %}{{ page.description | striptags | truncate(200) }}{% else %}{{ settings.seo_default_description }}{% endif %}">
+  <meta property="og:url" content="{{ page.url | default(store.url) }}">
+  <meta property="og:site_name" content="{{ store.name }}">
+  <meta property="og:locale" content="{{ store.language.code }}_SA">
+  <meta property="og:image" content="{% if page.image is defined and page.image %}{{ page.image }}{% else %}{{ settings.seo_og_image | asset_url }}{% endif %}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  {# ═══════════════════════════════════════════════
+     SEO: Twitter Card
+  ═══════════════════════════════════════════════ #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if page.title is defined and page.title %}{{ page.title }} | {{ store.name }}{% else %}{{ store.name }}{% endif %}">
+  <meta name="twitter:description" content="{% if page.description is defined and page.description %}{{ page.description | striptags | truncate(200) }}{% else %}{{ settings.seo_default_description }}{% endif %}">
+  <meta name="twitter:image" content="{% if page.image is defined and page.image %}{{ page.image }}{% else %}{{ settings.seo_og_image | asset_url }}{% endif %}">
+
+  {# ═══════════════════════════════════════════════
+     SEO: Webmaster Verification
+  ═══════════════════════════════════════════════ #}
+  {% if settings.google_site_verification %}
+    <meta name="google-site-verification" content="{{ settings.google_site_verification }}">
+  {% endif %}
+  {% if settings.bing_site_verification %}
+    <meta name="msvalidate.01" content="{{ settings.bing_site_verification }}">
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     SEO: Schema.org — Organization (site-wide)
+  ═══════════════════════════════════════════════ #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ store.name }}",
+    "url": "{{ store.url }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ store.logo }}"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "availableLanguage": ["Arabic", "English"]
+    },
+    "sameAs": []
+  }
+  </script>
+
+  {# ═══════════════════════════════════════════════
+     SEO: Schema.org — WebSite with SearchAction
+  ═══════════════════════════════════════════════ #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "{{ store.name }}",
+    "url": "{{ store.url }}",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "{{ store.url }}/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  {# ═══════════════════════════════════════════════
+     Favicon & Touch Icons
+  ═══════════════════════════════════════════════ #}
+  <link rel="icon" type="image/x-icon" href="{{ 'images/favicon.ico' | asset_url }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ 'images/apple-touch-icon.png' | asset_url }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ 'images/favicon-32x32.png' | asset_url }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ 'images/favicon-16x16.png' | asset_url }}">
+  <link rel="manifest" href="{{ 'images/site.webmanifest' | asset_url }}">
+  <meta name="theme-color" content="{{ settings.primary_color }}">
+
+  {# ═══════════════════════════════════════════════
+     Performance: Preconnect
+  ═══════════════════════════════════════════════ #}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.salla.sa">
+
+  {# ═══════════════════════════════════════════════
+     Fonts — IBM Plex Sans Arabic (clean, legible, SEO-friendly)
+  ═══════════════════════════════════════════════ #}
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  {# ═══════════════════════════════════════════════
+     CSS Variables from theme settings
+  ═══════════════════════════════════════════════ #}
+  <style>
+    :root {
+      --color-primary:   {{ settings.primary_color | default('#1a1a2e') }};
+      --color-accent:    {{ settings.accent_color   | default('#e94560') }};
+      --color-bg:        #ffffff;
+      --color-surface:   #f8f9fa;
+      --color-border:    #e9ecef;
+      --color-text:      #212529;
+      --color-text-muted:#6c757d;
+      --font-family:     'IBM Plex Sans Arabic', sans-serif;
+      --radius-sm:       6px;
+      --radius-md:       10px;
+      --radius-lg:       16px;
+      --shadow-sm:       0 1px 3px rgba(0,0,0,.08);
+      --shadow-md:       0 4px 16px rgba(0,0,0,.10);
+      --transition:      all .22s ease;
+      --container-max:   1280px;
+    }
+  </style>
+
+  {# ═══════════════════════════════════════════════
+     Main Stylesheet
+  ═══════════════════════════════════════════════ #}
+  {{ 'styles/theme.css' | asset_url | stylesheet_tag }}
+
+  {# ═══════════════════════════════════════════════
+     Salla Components (Web Components)
+  ═══════════════════════════════════════════════ #}
+  {% block extra_head %}{% endblock %}
+
+  {# ═══════════════════════════════════════════════
+     Google Tag Manager
+  ═══════════════════════════════════════════════ #}
+  {% if settings.gtm_id %}
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','{{ settings.gtm_id }}');</script>
+  {% endif %}
+</head>
+
+<body class="kwd-theme{% if settings.topnav_is_dark %} dark-nav{% endif %}" data-dir="{{ store.language.direction }}">
+
+  {# GTM noscript #}
+  {% if settings.gtm_id %}
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.gtm_id }}" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  {% endif %}
+
+  {# Facebook Pixel #}
+  {% if settings.fb_pixel_id %}
+  <script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '{{ settings.fb_pixel_id }}');
+  fbq('track', 'PageView');
+  </script>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     ANNOUNCEMENT BAR
+  ═══════════════════════════════════════════════ #}
+  {% if settings.show_announcement_bar and settings.announcement_text %}
+    <div class="announcement-bar" role="banner" aria-label="{{ trans('announcement') }}">
+      <div class="container">
+        <p class="announcement-text">{{ settings.announcement_text }}</p>
+        <button class="announcement-close" aria-label="{{ trans('close') }}" onclick="this.closest('.announcement-bar').remove()">
+          <i class="sicon-close"></i>
+        </button>
+      </div>
+    </div>
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     HEADER
+  ═══════════════════════════════════════════════ #}
+  {% include 'components/header/header.twig' %}
+
+  {# ═══════════════════════════════════════════════
+     BREADCRUMB (SEO structured nav)
+  ═══════════════════════════════════════════════ #}
+  {% if settings.show_breadcrumb and breadcrumb is defined and breadcrumb|length > 1 %}
+    {% include 'components/breadcrumb.twig' %}
+  {% endif %}
+
+  {# ═══════════════════════════════════════════════
+     MAIN CONTENT
+  ═══════════════════════════════════════════════ #}
+  <main id="main-content" role="main" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# ═══════════════════════════════════════════════
+     FOOTER
+  ═══════════════════════════════════════════════ #}
+  {% include 'components/footer/footer.twig' %}
+
+  {# ═══════════════════════════════════════════════
+     SKIP TO CONTENT (Accessibility + SEO)
+  ═══════════════════════════════════════════════ #}
+  <a href="#main-content" class="skip-link">{{ trans('skip_to_content') }}</a>
+
+  {# ═══════════════════════════════════════════════
+     Salla Web Components & SDK
+  ═══════════════════════════════════════════════ #}
+  <salla-cart-summary></salla-cart-summary>
+  <salla-quick-order></salla-quick-order>
+
+  {# ═══════════════════════════════════════════════
+     Main JS
+  ═══════════════════════════════════════════════ #}
+  {{ 'js/theme.js' | asset_url | script_tag }}
+
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

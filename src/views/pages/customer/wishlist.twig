@@ -1,0 +1,33 @@
+{# CUSTOMER WISHLIST — KWD Theme #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container">
+    <h1 style="font-size:1.25rem;font-weight:700;color:var(--color-primary);margin-bottom:1.5rem;">
+      {{ trans('wishlist') }}
+    </h1>
+
+    {% if wishlist is defined and wishlist | length %}
+      <div class="products-grid products-grid-4">
+        {% for product in wishlist %}
+          {% include 'components/product-card.twig' with { product: product } %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center" style="padding:4rem 0;">
+        <i class="sicon-heart" style="font-size:3.5rem;color:var(--color-border);"></i>
+        <p style="color:var(--color-text-muted);margin-top:1rem;">{{ trans('empty_wishlist') }}</p>
+        <a href="{{ store.url }}/products" class="btn btn-accent" style="margin-top:1.25rem;">
+          {{ trans('start_shopping') }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

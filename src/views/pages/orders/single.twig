@@ -1,0 +1,83 @@
+{# SINGLE ORDER — KWD Theme #}
+
+{% extends 'layouts/master.twig' %}
+
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Order",
+  "orderNumber": "{{ order.reference_id }}",
+  "orderStatus": "https://schema.org/OrderProcessing",
+  "orderDate": "{{ order.date }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="section">
+  <div class="container" style="max-width:800px;">
+
+    {# Header #}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+      <h1 style="font-size:1.25rem;font-weight:700;color:var(--color-primary);">
+        {{ trans('order') }} #{{ order.reference_id }}
+      </h1>
+      <span style="display:inline-block;padding:.35rem .85rem;border-radius:20px;font-weight:600;font-size:.85rem;background:rgba(var(--color-accent-rgb),.12);color:var(--color-accent);">
+        {{ order.status }}
+      </span>
+    </div>
+
+    {# Order items #}
+    <div style="border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:1.5rem;">
+      {% for item in order.items %}
+        <div class="cart-item" style="border-bottom:{% if not loop.last %}1px solid var(--color-border){% else %}none{% endif %};">
+          <img
+            src="{{ item.product.image.url | default(settings.placeholder | asset_url) }}"
+            alt="{{ item.product.name }}"
+            class="cart-item-img"
+            width="70"
+            height="70"
+            loading="lazy"
+          >
+          <div style="flex:1;">
+            <p class="cart-item-name">{{ item.product.name }}</p>
+            {% if item.options is defined %}
+              {% for opt in item.options %}
+                <span class="cart-item-variant">{{ opt.name }}: {{ opt.value }}</span>
+              {% endfor %}
+            {% endif %}
+            <p style="font-size:.85rem;color:var(--color-text-muted);margin-top:.25rem;">× {{ item.quantity }}</p>
+          </div>
+          <div class="cart-item-price">{{ item.total | money }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {# Summary #}
+    <div style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1.5rem;max-width:400px;margin-inline-start:auto;">
+      <div class="summary-row"><span>{{ trans('subtotal') }}</span><span>{{ order.subtotal | money }}</span></div>
+      {% if order.discount > 0 %}
+        <div class="summary-row" style="color:#22c55e;"><span>{{ trans('discount') }}</span><span>- {{ order.discount | money }}</span></div>
+      {% endif %}
+      {% if order.shipping_cost is defined %}
+        <div class="summary-row"><span>{{ trans('shipping') }}</span><span>{{ order.shipping_cost > 0 ? order.shipping_cost | money : trans('free') }}</span></div>
+      {% endif %}
+      {% if order.tax > 0 %}
+        <div class="summary-row"><span>{{ trans('vat') }}</span><span>{{ order.tax | money }}</span></div>
+      {% endif %}
+      <div class="summary-row total"><span>{{ trans('total') }}</span><span>{{ order.total | money }}</span></div>
+    </div>
+
+    {# Back link #}
+    <div style="margin-top:2rem;">
+      <a href="{{ store.url }}/orders" class="btn btn-outline">
+        <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'right' : 'left' }}" aria-hidden="true"></i>
+        {{ trans('back_to_orders') }}
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
