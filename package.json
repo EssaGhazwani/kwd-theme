@@ -4,6 +4,7 @@
   "description": "KWD Store Theme",
   "scripts": {
     "development": "echo Theme development command is ready",
+    "watch": "echo Watching theme files...",
     "dev": "salla theme preview",
     "build": "salla theme publish"
   },

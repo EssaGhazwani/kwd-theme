@@ -1474,3 +1474,157 @@ button { cursor: pointer; border: none; background: none; }
 [dir="rtl"] .slider-arrow-prev { left: auto; right: 1rem; }
 [dir="rtl"] .slider-arrow-next { right: auto; left: 1rem; }
 [dir="rtl"] .footer-links a:hover { padding-inline-start: .35rem; }
+
+/* ─── 27. HERO SLIDER — slide visibility fix ────────────────── */
+.hero-slide { display: none; }
+.hero-slide.active { display: flex; }
+/* Fade-in transition for active slide */
+.hero-slide.active { animation: slide-in .5s ease; }
+@keyframes slide-in {
+  from { opacity: 0; transform: scale(1.02); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ─── 28. PROMO BANNERS ─────────────────────────────────────── */
+.promo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.promo-card { transition: transform .25s ease, box-shadow .25s ease; }
+.promo-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+/* ─── 29. FEATURES GRID ─────────────────────────────────────── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+.feature-card {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  transition: var(--transition);
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.feature-icon-wrap {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(233,69,96,.1);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1rem;
+}
+.feature-icon { font-size: 1.6rem; color: var(--color-accent); }
+.feature-title { font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: .5rem; }
+.feature-desc { font-size: .875rem; color: var(--color-text-muted); line-height: 1.6; }
+
+/* ─── 30. TESTIMONIALS GRID ─────────────────────────────────── */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.testimonial-card {
+  background: rgba(255,255,255,.06);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  border: 1px solid rgba(255,255,255,.08);
+}
+.testimonial-quote { color: var(--color-accent); font-size: 2rem; line-height: 1; margin-bottom: .75rem; }
+.testimonial-text { color: rgba(255,255,255,.85); line-height: 1.8; font-size: .95rem; margin-bottom: 1.25rem; }
+.testimonial-author { display: flex; align-items: center; gap: .75rem; }
+.testimonial-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: .95rem;
+  flex-shrink: 0;
+}
+.testimonial-name { color: #fff; font-weight: 600; font-size: .9rem; }
+.testimonial-city { color: rgba(255,255,255,.5); font-size: .8rem; }
+.testimonial-stars { margin-inline-start: auto; color: #f59e0b; font-size: .9rem; }
+
+/* ─── 31. CATEGORIES GRID (home) ────────────────────────────── */
+.cats-home-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+.cat-home-card {
+  text-align: center;
+  padding: 1.75rem 1rem;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: var(--transition);
+  display: block;
+}
+.cat-home-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.cat-home-icon {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(26,26,46,.08);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto .75rem;
+  font-size: 1.5rem;
+}
+.cat-home-name { font-weight: 600; font-size: .9rem; color: var(--color-primary); }
+.cat-home-count { font-size: .75rem; color: var(--color-text-muted); margin-top: .25rem; }
+
+/* ─── 32. DEMO BLOG GRID ────────────────────────────────────── */
+.demo-blog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.demo-blog-card {
+  background: var(--color-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  transition: var(--transition);
+}
+.demo-blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.demo-blog-thumb {
+  height: 180px;
+  display: flex; align-items: center; justify-content: center;
+}
+.demo-blog-body { padding: 1.25rem; }
+.demo-blog-date { font-size: .75rem; color: var(--color-text-muted); margin-bottom: .5rem; }
+.demo-blog-title { font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: .5rem; line-height: 1.4; }
+.demo-blog-title a { color: inherit; }
+.demo-blog-title a:hover { color: var(--color-accent); }
+.demo-blog-excerpt { font-size: .875rem; color: var(--color-text-muted); line-height: 1.6; }
+.demo-blog-link {
+  display: inline-flex; align-items: center; gap: .35rem;
+  margin-top: .75rem; font-size: .875rem; font-weight: 600; color: var(--color-accent);
+}
+
+/* ─── 33. NEWSLETTER SECTION ────────────────────────────────── */
+.newsletter-section {
+  background: linear-gradient(135deg, var(--color-surface) 0%, #fff 100%);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ─── 34. RESPONSIVE — new sections ────────────────────────── */
+@media (max-width: 1199px) {
+  .cats-home-grid { grid-template-columns: repeat(4, 1fr); }
+  .features-grid  { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 991px) {
+  .promo-grid         { grid-template-columns: 1fr; }
+  .testimonials-grid  { grid-template-columns: repeat(2, 1fr); }
+  .demo-blog-grid     { grid-template-columns: repeat(2, 1fr); }
+  .cats-home-grid     { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 767px) {
+  .features-grid      { grid-template-columns: repeat(2, 1fr); }
+  .testimonials-grid  { grid-template-columns: 1fr; }
+  .demo-blog-grid     { grid-template-columns: 1fr; }
+  .cats-home-grid     { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .features-grid { grid-template-columns: 1fr 1fr; }
+}

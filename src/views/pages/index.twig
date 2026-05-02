@@ -1,13 +1,14 @@
 {# ═══════════════════════════════════════════════
    HOME PAGE — KWD Theme
-   SEO: Schema WebPage, ItemList for products
-   Page: index.twig
+   kwdstore.com | Salla Twilight Engine
+   SEO: Schema WebPage + ItemList
+   All sections filled — demo data fallback when
+   store is empty (great for theme preview)
 ═══════════════════════════════════════════════ #}
 
 {% extends 'layouts/master.twig' %}
 
 {% block extra_head %}
-{# HomePage Schema #}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -16,7 +17,6 @@
   "url": "{{ store.url }}",
   "name": "{{ store.name }}",
   "isPartOf": { "@type": "WebSite", "url": "{{ store.url }}" },
-  "about": { "@type": "Thing", "name": "{{ store.name }}" },
   "description": "{{ settings.seo_default_description }}"
 }
 </script>
@@ -24,10 +24,75 @@
 
 {% block content %}
 
-{# ══════════════════════════════════════════════════
-   Determine which content types exist in page.content
-   so we can fall back gracefully when nothing is added
-══════════════════════════════════════════════════ #}
+{# ════════════════════════════════════════════════
+   DEMO DATA — shown when store has no real content
+   Real Salla data always takes priority
+════════════════════════════════════════════════ #}
+{% set demo_products = [
+  { id: 'd1', name: 'عطر الجوري الفاخر', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/f8f0fc/1a1a2e?text=Product+1',
+    price: '249', sale_price: '199', badge: 'وفّر 20%', is_hot: false },
+  { id: 'd2', name: 'ساعة ذكية Pro X', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/e8f4fd/1a1a2e?text=Product+2',
+    price: '899', sale_price: null, badge: 'الأكثر مبيعًا', is_hot: true },
+  { id: 'd3', name: 'حقيبة الجلد الكلاسيكية', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/fdf8e8/1a1a2e?text=Product+3',
+    price: '450', sale_price: '360', badge: 'خصم 20%', is_hot: false },
+  { id: 'd4', name: 'نظارة شمسية أنيقة', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/eafaf1/1a1a2e?text=Product+4',
+    price: '185', sale_price: null, badge: null, is_hot: false },
+  { id: 'd5', name: 'كريم العناية الفائقة', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/fef9e7/1a1a2e?text=Product+5',
+    price: '120', sale_price: '95', badge: null, is_hot: false },
+  { id: 'd6', name: 'سماعات لاسلكية Elite', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/ebf5fb/1a1a2e?text=Product+6',
+    price: '650', sale_price: null, badge: 'جديد', is_hot: true },
+  { id: 'd7', name: 'مجموعة العناية بالبشرة', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/fdedec/1a1a2e?text=Product+7',
+    price: '320', sale_price: '250', badge: 'وفّر 22%', is_hot: false },
+  { id: 'd8', name: 'حذاء رياضي كومفورت', url: store.url ~ '/products',
+    thumb: 'https://placehold.co/400x400/f0f0f0/1a1a2e?text=Product+8',
+    price: '380', sale_price: null, badge: null, is_hot: false }
+] %}
+
+{% set demo_categories = [
+  { name: 'العطور',          color: '#f8f0fc', icon: 'sicon-star',         count: 24, url: store.url ~ '/categories' },
+  { name: 'الإلكترونيات',    color: '#e8f4fd', icon: 'sicon-monitor',      count: 38, url: store.url ~ '/categories' },
+  { name: 'الأزياء',         color: '#fdf8e8', icon: 'sicon-tag',          count: 52, url: store.url ~ '/categories' },
+  { name: 'الجمال والعناية', color: '#fdedec', icon: 'sicon-heart',        count: 45, url: store.url ~ '/categories' },
+  { name: 'الأحذية',         color: '#eafaf1', icon: 'sicon-shopping-bag', count: 29, url: store.url ~ '/categories' },
+  { name: 'الإكسسوارات',     color: '#ebf5fb', icon: 'sicon-gift',         count: 31, url: store.url ~ '/categories' }
+] %}
+
+{% set demo_testimonials = [
+  { name: 'سارة الأحمدي', city: 'الرياض', color: '#e94560',
+    text: 'تجربة تسوق رائعة! المنتجات أصلية والتوصيل سريع جداً. سأكون عميلة دائمة بالتأكيد.' },
+  { name: 'محمد العتيبي', city: 'جدة',    color: '#1a1a2e',
+    text: 'خدمة عملاء ممتازة وجودة المنتجات فوق التوقعات. أنصح الجميع بالتسوق من هنا.' },
+  { name: 'نورة السالم',  city: 'الدمام', color: '#0f3460',
+    text: 'الأسعار معقولة والمنتجات راقية. التغليف جميل جداً ويحمي المنتج بشكل ممتاز.' }
+] %}
+
+{% set demo_features = [
+  { icon: 'sicon-award',      title: 'منتجات أصلية 100%',  desc: 'جميع منتجاتنا مضمونة الجودة والأصالة مع فاتورة رسمية' },
+  { icon: 'sicon-truck',      title: 'توصيل سريع',          desc: 'توصيل خلال 24-48 ساعة داخل المملكة العربية السعودية' },
+  { icon: 'sicon-rotate-ccw', title: 'إرجاع مجاني 30 يوم', desc: 'سياسة إرجاع مرنة وسهلة بدون أي تعقيدات' },
+  { icon: 'sicon-shield',     title: 'دفع آمن 100%',        desc: 'جميع المعاملات مؤمنة ببروتوكولات تشفير حديثة' }
+] %}
+
+{% set demo_blog = [
+  { title: 'أفضل 10 عطور لفصل الصيف 2026',
+    excerpt: 'اكتشف أجمل تشكيلة عطور مناسبة للأجواء الحارة، تدوم طويلاً وتضفي أناقة لا تُضاهى.',
+    date: '15 أبريل 2026', url: store.url ~ '/blog', color: '#f8f0fc' },
+  { title: 'دليل اختيار الساعة الذكية المناسبة',
+    excerpt: 'قبل شراء ساعتك الذكية، اقرأ هذا الدليل لتعرف أهم المواصفات وأفضل الخيارات.',
+    date: '2 مايو 2026',  url: store.url ~ '/blog', color: '#e8f4fd' },
+  { title: 'نصائح العناية بالبشرة في الصيف',
+    excerpt: 'روتين يومي بسيط وفعّال للحفاظ على بشرتك منتعشة وصحية طوال فصل الصيف.',
+    date: '28 أبريل 2026', url: store.url ~ '/blog', color: '#eafaf1' }
+] %}
+
+{# ═══ 1. HERO ═══ #}
 {% set has_hero = false %}
 {% for c in page.content %}
   {% if c.type in ['hero-slider','component-enhanced-slider','component-photos-slider'] %}
@@ -35,9 +100,6 @@
   {% endif %}
 {% endfor %}
 
-{# ═══ 1. HERO ═══
-   Always visible. If the merchant hasn't added a slider component yet,
-   show a branded fallback hero using store data. #}
 {% if has_hero %}
   {% for component in page.content %}
     {% if component.type == 'hero-slider' %}
@@ -49,23 +111,69 @@
     {% endif %}
   {% endfor %}
 {% else %}
-  {# ── Default hero (no slider configured yet) ── #}
-  <section class="hero-slider hero-default" aria-label="{{ store.name }}" style="background:var(--color-primary);min-height:420px;display:flex;align-items:center;justify-content:center;text-align:center;padding:4rem 1rem;">
-    <div class="container">
-      {% if store.logo %}
-        <img src="{{ store.logo }}" alt="{{ store.name }}" style="height:72px;object-fit:contain;margin:0 auto 1.5rem;filter:brightness(0) invert(1);" loading="eager" fetchpriority="high">
-      {% endif %}
-      <h1 style="color:#fff;font-size:clamp(1.75rem,5vw,3rem);font-weight:700;line-height:1.2;margin-bottom:1rem;">
-        {{ store.name }}
-      </h1>
-      {% if settings.seo_default_description %}
-        <p style="color:rgba(255,255,255,.85);font-size:1.1rem;max-width:560px;margin:0 auto 2rem;line-height:1.7;">
-          {{ settings.seo_default_description }}
-        </p>
-      {% endif %}
-      <a href="{{ store.url }}/products" class="btn btn-accent btn-lg" style="font-size:1.05rem;padding:.9rem 2.5rem;">
-        {{ trans('start_shopping') }}
-      </a>
+  {# ── Beautiful 3-slide demo hero ── #}
+  <section class="hero-slider" data-auto="true" aria-label="{{ store.name }}">
+
+    <article class="hero-slide active"
+      style="min-height:540px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 55%,#0f3460 100%);">
+      <div aria-hidden="true" style="position:absolute;inset-inline-end:-60px;top:50%;transform:translateY(-50%);width:480px;height:480px;border-radius:50%;background:rgba(233,69,96,.09);"></div>
+      <div aria-hidden="true" style="position:absolute;inset-inline-end:80px;top:50%;transform:translateY(-50%);width:280px;height:280px;border-radius:50%;background:rgba(233,69,96,.13);"></div>
+      <div class="container" style="position:relative;z-index:2;">
+        <div class="hero-content">
+          <div class="section-label" style="margin-bottom:.9rem;">{{ store.name }} — مجموعة ٢٠٢٦</div>
+          <h1 class="hero-title">
+            اكتشف تشكيلتنا<br>
+            <span style="color:var(--color-accent);">الحصرية الجديدة</span>
+          </h1>
+          <p class="hero-subtitle">منتجات فاخرة بأسعار مناسبة — شحن مجاني على الطلبات فوق 200 ر.س</p>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+            <a href="{{ store.url }}/products" class="hero-cta">
+              تسوّق الآن <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+            </a>
+            <a href="{{ store.url }}/products?sort=newest" style="color:rgba(255,255,255,.8);font-size:.95rem;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;">أحدث الوصول</a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="hero-slide"
+      style="min-height:540px;background:linear-gradient(135deg,#e94560 0%,#c73652 40%,#0f3460 100%);">
+      <div class="container" style="position:relative;z-index:2;">
+        <div class="hero-content">
+          <div class="section-label" style="margin-bottom:.9rem;color:rgba(255,255,255,.8);">عروض حصرية</div>
+          <h1 class="hero-title">خصومات تصل إلى<br><span style="font-size:1.4em;line-height:1;">50%</span></h1>
+          <p class="hero-subtitle">لا تفوّت أفضل الصفقات على منتجاتنا المختارة — العرض لفترة محدودة!</p>
+          <a href="{{ store.url }}/products?sort=sale" class="hero-cta" style="background:#fff;color:var(--color-accent);">
+            تصفّح العروض <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <article class="hero-slide"
+      style="min-height:540px;background:linear-gradient(135deg,#0f3460 0%,#1a1a2e 100%);">
+      <div class="container" style="position:relative;z-index:2;">
+        <div class="hero-content">
+          <div class="section-label" style="margin-bottom:.9rem;">ضمان الجودة</div>
+          <h1 class="hero-title">منتجات أصلية<br><span style="color:var(--color-accent);">بضمان كامل</span></h1>
+          <p class="hero-subtitle">جميع منتجاتنا مضمونة ١٠٠٪ أصلية مع خدمة عملاء على مدار الساعة</p>
+          <a href="{{ store.url }}/products" class="hero-cta">
+            اكتشف المزيد <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <button class="slider-arrow slider-arrow-prev" aria-label="السابق">
+      <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'right' : 'left' }}" aria-hidden="true"></i>
+    </button>
+    <button class="slider-arrow slider-arrow-next" aria-label="التالي">
+      <i class="sicon-chevron-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+    </button>
+    <div class="slider-controls" role="tablist">
+      <button class="slider-dot active" role="tab" aria-selected="true"  aria-label="١"></button>
+      <button class="slider-dot"        role="tab" aria-selected="false" aria-label="٢"></button>
+      <button class="slider-dot"        role="tab" aria-selected="false" aria-label="٣"></button>
     </div>
   </section>
 {% endif %}
@@ -73,75 +181,332 @@
 {# ═══ 2. TRUST BAR — always visible ═══ #}
 {% include 'components/home/trust-bar.twig' %}
 
-{# ═══ 3. CATEGORIES GRID — always visible if categories exist ═══ #}
-{% if store.categories is defined and store.categories | length %}
-  {% include 'components/home/categories-grid.twig' %}
-{% endif %}
-
-{# ═══ 4. ALL OTHER PAGE BUILDER COMPONENTS ═══ #}
-{% for component in page.content %}
-  {% if component.type == 'component-featured-products' %}
-    {% include 'components/home/component-featured-products.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-products-slider' %}
-    {% include 'components/home/component-products-slider.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-latest-products' %}
-    {% include 'components/home/component-latest-products.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-fixed-products' %}
-    {% include 'components/home/component-fixed-products.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-fixed-banner' %}
-    {% include 'components/home/component-fixed-banner.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-parallax-background' %}
-    {% include 'components/home/component-parallax-background.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-store-features' %}
-    {% include 'components/home/component-store-features.twig' with { data: component } %}
-
-  {% elseif component.type in ['component-testimonials','component-random-testimonials'] %}
-    {% include 'components/home/component-testimonials.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-brands' %}
-    {% include 'components/home/component-brands.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-youtube' %}
-    {% include 'components/home/component-youtube.twig' with { data: component } %}
-
-  {% elseif component.type in ['component-square-photos','component-enhanced-square-banners'] %}
-    {% include 'components/home/component-enhanced-square-banners.twig' with { data: component } %}
-
-  {% elseif component.type == 'component-main-links' %}
-    {% include 'components/home/component-main-links.twig' with { data: component } %}
-
-  {% elseif component.type == 'categories-grid' %}
-    {% include 'components/home/categories-grid.twig' with { data: component } %}
-
-  {% elseif component.type == 'trust-badges' %}
-    {% include 'components/home/trust-bar.twig' with { data: component } %}
-  {% endif %}
-{% endfor %}
-
-{# ═══ 5. RECENT BLOG POSTS ═══ #}
-{% if page.blog_posts is defined and page.blog_posts | length %}
-<section class="section blog-preview-section" aria-labelledby="blog-section-title">
+{# ═══ 3. CATEGORIES GRID ═══ #}
+<section class="section section-sm" aria-labelledby="cats-heading">
   <div class="container">
     <header class="section-header">
-      <span class="section-label">{{ trans('blog') }}</span>
-      <h2 class="section-title" id="blog-section-title">{{ trans('latest_articles') }}</h2>
-      <a href="{{ store.url }}/blog" class="section-link">
-        {{ trans('view_all_articles') }} <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
-      </a>
+      <span class="section-label">{{ trans('browse') | default('تصفّح') }}</span>
+      <h2 class="section-title" id="cats-heading">{{ trans('shop_by_category') | default('تسوّق حسب الفئة') }}</h2>
     </header>
-    <div class="blog-grid">
-      {% for post in page.blog_posts | slice(0, 3) %}
-        {% include 'components/blog-card.twig' with { post: post } %}
+    {% set cats = (store.categories is defined and store.categories | length) ? store.categories | slice(0,6) : demo_categories %}
+    <div class="cats-home-grid">
+      {% for cat in cats %}
+        <a href="{{ cat.url | default(store.url ~ '/categories') }}"
+          class="cat-home-card"
+          style="background:{{ cat.color | default('#f5f5f5') }};"
+          aria-label="{{ cat.name }}">
+          {% if cat.image is defined and cat.image %}
+            <img src="{{ cat.image }}" alt="{{ cat.name }}" style="width:56px;height:56px;object-fit:cover;border-radius:50%;margin:0 auto .75rem;" loading="lazy">
+          {% else %}
+            <div class="cat-home-icon">
+              <i class="{{ cat.icon | default('sicon-tag') }}" style="color:var(--color-primary);"></i>
+            </div>
+          {% endif %}
+          <div class="cat-home-name">{{ cat.name }}</div>
+          {% set cnt = cat.count | default(cat.products_count | default(null)) %}
+          {% if cnt %}<div class="cat-home-count">{{ cnt }} منتج</div>{% endif %}
+        </a>
       {% endfor %}
     </div>
   </div>
 </section>
+
+{# ═══ 4. FEATURED PRODUCTS ═══ #}
+{% set feat_comp = null %}
+{% for c in page.content %}
+  {% if c.type == 'component-featured-products' %}{% set feat_comp = c %}{% endif %}
+{% endfor %}
+
+<section class="section" aria-labelledby="featured-heading">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label">{{ trans('featured') | default('مختارة') }}</span>
+      <h2 class="section-title" id="featured-heading">
+        {{ feat_comp.settings.title | default(trans('featured_products') | default('المنتجات المميزة')) }}
+      </h2>
+      <p class="section-subtitle">{{ feat_comp.settings.subtitle | default('اختارها فريقنا خصيصًا بناءً على أعلى تقييمات العملاء') }}</p>
+      <a href="{{ store.url }}/products" class="section-link">
+        {{ trans('view_all') | default('عرض الكل') }}
+        <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+      </a>
+    </header>
+
+    {% set has_real_featured = feat_comp is not null and feat_comp.products is defined and feat_comp.products | length %}
+    {% set fp = has_real_featured ? feat_comp.products : demo_products %}
+
+    <div class="products-grid products-grid-4">
+      {% for p in fp | slice(0, 8) %}
+        {% if has_real_featured %}
+          {% include 'components/product-card.twig' with { product: p } %}
+        {% else %}
+          <article class="product-card" itemscope itemtype="https://schema.org/Product">
+            <div class="product-thumb">
+              <a href="{{ p.url }}" itemprop="url" aria-label="{{ p.name }}">
+                <img src="{{ p.thumb }}" alt="{{ p.name }}" width="400" height="400" loading="lazy" itemprop="image">
+              </a>
+              <div class="product-badges">
+                {% if p.sale_price %}<span class="badge-pill badge-sale">{{ p.badge | default('خصم') }}</span>
+                {% elseif p.badge %}<span class="badge-pill badge-new">{{ p.badge }}</span>{% endif %}
+                {% if p.is_hot %}<span class="badge-pill badge-hot">الأكثر مبيعًا</span>{% endif %}
+              </div>
+              <div class="product-actions">
+                <button class="product-action-btn" aria-label="أضف للمفضلة"><i class="sicon-heart" aria-hidden="true"></i></button>
+                <a href="{{ p.url }}" class="product-action-btn" aria-label="عرض سريع: {{ p.name }}"><i class="sicon-eye" aria-hidden="true"></i></a>
+              </div>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name" itemprop="name"><a href="{{ p.url }}">{{ p.name }}</a></h3>
+              <div class="product-rating" aria-label="5 نجوم">
+                <div class="stars"><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i></div>
+                <span class="rating-count">(١٢٤)</span>
+              </div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <meta itemprop="priceCurrency" content="{{ store.currency.code | default('SAR') }}">
+                {% if p.sale_price %}
+                  <span class="price-current" itemprop="price" content="{{ p.sale_price }}">{{ p.sale_price }} ر.س</span>
+                  <span class="price-old">{{ p.price }} ر.س</span>
+                {% else %}
+                  <span class="price-current" itemprop="price" content="{{ p.price }}">{{ p.price }} ر.س</span>
+                {% endif %}
+              </div>
+              <a href="{{ p.url }}" class="btn-add-cart btn btn-primary btn-sm"
+                style="width:100%;display:flex;align-items:center;justify-content:center;gap:.45rem;margin-top:.75rem;">
+                <i class="sicon-shopping-bag" aria-hidden="true"></i>
+                {{ trans('add_to_cart') | default('أضف للسلة') }}
+              </a>
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ═══ 5. PROMO 2-COLUMN BANNERS ═══ #}
+<section class="section section-sm" aria-label="عروض ترويجية">
+  <div class="container">
+    <div class="promo-grid">
+
+      <div class="promo-card" style="background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);border-radius:var(--radius-lg);padding:2.5rem;position:relative;overflow:hidden;min-height:200px;display:flex;align-items:center;">
+        <div style="position:relative;z-index:1;">
+          <div class="section-label" style="margin-bottom:.5rem;">توصيل مجاني</div>
+          <h3 style="color:#fff;font-size:1.4rem;font-weight:700;line-height:1.3;margin-bottom:.75rem;">
+            طلبات فوق<br><span style="color:var(--color-accent);font-size:1.9rem;">200 ر.س</span>
+          </h3>
+          <a href="{{ store.url }}/products" style="color:rgba(255,255,255,.85);font-size:.9rem;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;">تسوّق الآن ←</a>
+        </div>
+        <div aria-hidden="true" style="position:absolute;inset-inline-end:-30px;top:-30px;width:200px;height:200px;border-radius:50%;background:rgba(233,69,96,.15);pointer-events:none;"></div>
+      </div>
+
+      <div class="promo-card" style="background:linear-gradient(135deg,#e94560 0%,#c73652 100%);border-radius:var(--radius-lg);padding:2.5rem;position:relative;overflow:hidden;min-height:200px;display:flex;align-items:center;">
+        <div style="position:relative;z-index:1;">
+          <div class="section-label" style="color:rgba(255,255,255,.8);margin-bottom:.5rem;">عرض محدود</div>
+          <h3 style="color:#fff;font-size:1.4rem;font-weight:700;line-height:1.3;margin-bottom:.75rem;">
+            خصم<br><span style="font-size:1.9rem;">30%</span> على جميع العطور
+          </h3>
+          <a href="{{ store.url }}/products" style="color:rgba(255,255,255,.85);font-size:.9rem;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:2px;">استفد الآن ←</a>
+        </div>
+        <div aria-hidden="true" style="position:absolute;inset-inline-end:-30px;top:-30px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.1);pointer-events:none;"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{# ═══ 6. NEW ARRIVALS ═══ #}
+{% set latest_comp = null %}
+{% for c in page.content %}
+  {% if c.type == 'component-latest-products' %}{% set latest_comp = c %}{% endif %}
+{% endfor %}
+
+<section class="section" style="background:var(--color-surface);" aria-labelledby="arrivals-heading">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label">{{ trans('new') | default('جديد') }}</span>
+      <h2 class="section-title" id="arrivals-heading">{{ trans('latest_products') | default('أحدث المنتجات') }}</h2>
+      <p class="section-subtitle">مجموعات جديدة تصل أسبوعيًا — كن أول من يحصل عليها</p>
+      <a href="{{ store.url }}/products?sort=newest" class="section-link">
+        {{ trans('view_all') | default('عرض الكل') }}
+        <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+      </a>
+    </header>
+
+    {% set has_real_latest = latest_comp is not null and latest_comp.products is defined and latest_comp.products | length %}
+    {% set lp = has_real_latest ? latest_comp.products : demo_products %}
+
+    <div class="products-grid products-grid-4">
+      {% for p in lp | slice(0, 4) %}
+        {% if has_real_latest %}
+          {% include 'components/product-card.twig' with { product: p } %}
+        {% else %}
+          <article class="product-card" itemscope itemtype="https://schema.org/Product">
+            <div class="product-thumb">
+              <a href="{{ p.url }}" itemprop="url"><img src="{{ p.thumb }}" alt="{{ p.name }}" width="400" height="400" loading="lazy"></a>
+              <div class="product-badges"><span class="badge-pill badge-new">{{ trans('new') | default('جديد') }}</span></div>
+              <div class="product-actions">
+                <button class="product-action-btn" aria-label="مفضلة"><i class="sicon-heart" aria-hidden="true"></i></button>
+                <a href="{{ p.url }}" class="product-action-btn" aria-label="عرض"><i class="sicon-eye" aria-hidden="true"></i></a>
+              </div>
+            </div>
+            <div class="product-info">
+              <h3 class="product-name" itemprop="name"><a href="{{ p.url }}">{{ p.name }}</a></h3>
+              <div class="product-rating" aria-label="5 نجوم">
+                <div class="stars"><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i><i class="sicon-star" aria-hidden="true"></i></div>
+              </div>
+              <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <meta itemprop="priceCurrency" content="{{ store.currency.code | default('SAR') }}">
+                {% if p.sale_price %}
+                  <span class="price-current">{{ p.sale_price }} ر.س</span><span class="price-old">{{ p.price }} ر.س</span>
+                {% else %}
+                  <span class="price-current" itemprop="price" content="{{ p.price }}">{{ p.price }} ر.س</span>
+                {% endif %}
+              </div>
+              <a href="{{ p.url }}" class="btn-add-cart btn btn-primary btn-sm" style="width:100%;display:flex;align-items:center;justify-content:center;gap:.45rem;margin-top:.75rem;">
+                <i class="sicon-shopping-bag" aria-hidden="true"></i> {{ trans('add_to_cart') | default('أضف للسلة') }}
+              </a>
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ═══ 7. REMAINING CMS COMPONENTS ═══ #}
+{% for component in page.content %}
+  {% if component.type not in ['hero-slider','component-enhanced-slider','component-photos-slider','component-featured-products','component-latest-products'] %}
+
+    {% if component.type == 'component-products-slider' %}
+      {% include 'components/home/component-products-slider.twig' with { data: component } %}
+    {% elseif component.type == 'component-fixed-products' %}
+      {% include 'components/home/component-fixed-products.twig' with { data: component } %}
+    {% elseif component.type == 'component-fixed-banner' %}
+      {% include 'components/home/component-fixed-banner.twig' with { data: component } %}
+    {% elseif component.type == 'component-parallax-background' %}
+      {% include 'components/home/component-parallax-background.twig' with { data: component } %}
+    {% elseif component.type == 'component-store-features' %}
+      {% include 'components/home/component-store-features.twig' with { data: component } %}
+    {% elseif component.type in ['component-testimonials','component-random-testimonials'] %}
+      {% include 'components/home/component-testimonials.twig' with { data: component } %}
+    {% elseif component.type == 'component-brands' %}
+      {% include 'components/home/component-brands.twig' with { data: component } %}
+    {% elseif component.type == 'component-youtube' %}
+      {% include 'components/home/component-youtube.twig' with { data: component } %}
+    {% elseif component.type in ['component-square-photos','component-enhanced-square-banners'] %}
+      {% include 'components/home/component-enhanced-square-banners.twig' with { data: component } %}
+    {% elseif component.type == 'component-main-links' %}
+      {% include 'components/home/component-main-links.twig' with { data: component } %}
+    {% elseif component.type == 'categories-grid' %}
+      {% include 'components/home/categories-grid.twig' with { data: component } %}
+    {% elseif component.type == 'trust-badges' %}
+      {% include 'components/home/trust-bar.twig' with { data: component } %}
+    {% endif %}
+
+  {% endif %}
+{% endfor %}
+
+{# ═══ 8. WHY SHOP WITH US ═══ #}
+<section class="section" aria-labelledby="why-heading">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label">لماذا نحن؟</span>
+      <h2 class="section-title" id="why-heading">تسوّق بثقة واطمئنان</h2>
+      <p class="section-subtitle">مزايا تجعل تجربة التسوق معنا استثنائية في كل مرة</p>
+    </header>
+    <div class="features-grid">
+      {% for feat in demo_features %}
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <i class="{{ feat.icon }} feature-icon" aria-hidden="true"></i>
+          </div>
+          <h3 class="feature-title">{{ feat.title }}</h3>
+          <p class="feature-desc">{{ feat.desc }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ═══ 9. CUSTOMER TESTIMONIALS ═══ #}
+<section class="section" style="background:var(--color-primary);" aria-labelledby="reviews-heading">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label" style="color:var(--color-accent);">آراء العملاء</span>
+      <h2 class="section-title" id="reviews-heading" style="color:#fff;">ماذا يقول عملاؤنا؟</h2>
+      <p class="section-subtitle" style="color:rgba(255,255,255,.65);">آلاف العملاء الراضين يشاركون تجاربهم الحقيقية معنا</p>
+    </header>
+    <div class="testimonials-grid">
+      {% for t in demo_testimonials %}
+        <blockquote class="testimonial-card">
+          <div class="testimonial-quote" aria-hidden="true">❝</div>
+          <p class="testimonial-text">{{ t.text }}</p>
+          <footer class="testimonial-author">
+            <div class="testimonial-avatar" style="background:{{ t.color }};" aria-hidden="true">
+              {{ t.name | slice(0, 1) }}
+            </div>
+            <div>
+              <div class="testimonial-name">{{ t.name }}</div>
+              <div class="testimonial-city">{{ t.city }}</div>
+            </div>
+            <div class="testimonial-stars" aria-label="5 نجوم">★★★★★</div>
+          </footer>
+        </blockquote>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ═══ 10. NEWSLETTER ═══ #}
+{% if settings.show_newsletter %}
+<section class="section newsletter-section" aria-labelledby="newsletter-heading">
+  <div class="container" style="max-width:640px;text-align:center;">
+    <span class="section-label">اشترك معنا</span>
+    <h2 class="section-title" id="newsletter-heading" style="margin-bottom:.75rem;">لا تفوّتك أي عروض!</h2>
+    <p style="color:var(--color-text-muted);margin-bottom:1.75rem;line-height:1.7;">
+      اشترك في نشرتنا البريدية واحصل على خصم <strong>10%</strong> على أول طلب،
+      وكن أول من يعرف عن العروض الحصرية والمجموعات الجديدة.
+    </p>
+    <salla-newsletter></salla-newsletter>
+  </div>
+</section>
 {% endif %}
+
+{# ═══ 11. BLOG PREVIEW ═══ #}
+{% set blog_posts = (page.blog_posts is defined and page.blog_posts | length) ? page.blog_posts : demo_blog %}
+
+<section class="section" style="background:var(--color-surface);" aria-labelledby="blog-home-heading">
+  <div class="container">
+    <header class="section-header">
+      <span class="section-label">{{ trans('blog') | default('المدونة') }}</span>
+      <h2 class="section-title" id="blog-home-heading">{{ trans('latest_articles') | default('أحدث المقالات') }}</h2>
+      <a href="{{ store.url }}/blog" class="section-link">
+        {{ trans('view_all_articles') | default('كل المقالات') }}
+        <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+      </a>
+    </header>
+    <div class="demo-blog-grid">
+      {% for post in blog_posts | slice(0, 3) %}
+        {% if post.color is defined %}
+          <article class="demo-blog-card" itemscope itemtype="https://schema.org/BlogPosting">
+            <div class="demo-blog-thumb" style="background:{{ post.color }};">
+              <i class="sicon-edit" style="font-size:2.5rem;color:var(--color-primary);opacity:.25;" aria-hidden="true"></i>
+            </div>
+            <div class="demo-blog-body">
+              <div class="demo-blog-date"><i class="sicon-calendar" aria-hidden="true"></i> {{ post.date }}</div>
+              <h3 class="demo-blog-title" itemprop="headline"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+              <p class="demo-blog-excerpt" itemprop="description">{{ post.excerpt }}</p>
+              <a href="{{ post.url }}" class="demo-blog-link">
+                {{ trans('read_more') | default('اقرأ المزيد') }}
+                <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+              </a>
+            </div>
+          </article>
+        {% else %}
+          {% include 'components/blog-card.twig' with { post: post } %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
 {% endblock %}
