@@ -10,7 +10,7 @@
 
   {# Slides #}
   {% for slide in slides %}
-    <article class="hero-slide {% if loop.first %}active{% endif %}" aria-label="{{ slide.title | default('Slide ' ~ loop.index) }}">
+    <article class="hero-slide {% if loop.first %}active{% endif %} animate-fade-up" aria-label="{{ slide.title | default('Slide ' ~ loop.index) }}">
 
       {# Background image — first slide eager-loaded (LCP), rest lazy #}
       {% if slide.image %}
@@ -29,18 +29,28 @@
 
       <div class="container">
         <div class="hero-content">
+          {% if slide.label %}
+            <div class="section-label" style="margin-bottom:.9rem;">{{ slide.label }}</div>
+          {% endif %}
           {% if slide.title %}
             <h1 class="hero-title">{{ slide.title }}</h1>
           {% endif %}
           {% if slide.subtitle %}
             <p class="hero-subtitle">{{ slide.subtitle }}</p>
           {% endif %}
-          {% if slide.btn_text and slide.btn_url %}
-            <a href="{{ slide.btn_url }}" class="hero-cta btn-rounded">
-              {{ slide.btn_text }}
-              <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
-            </a>
-          {% endif %}
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+            {% if slide.btn_text and slide.btn_url %}
+              <a href="{{ slide.btn_url }}" class="hero-cta">
+                {{ slide.btn_text }}
+                <i class="sicon-arrow-{{ store.language.direction == 'rtl' ? 'left' : 'right' }}" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+            {% if slide.secondary_btn_text and slide.secondary_btn_url %}
+              <a href="{{ slide.secondary_btn_url }}" class="btn btn-outline btn-rounded" style="color:#fff;border-color:rgba(255,255,255,.4);">
+                {{ slide.secondary_btn_text }}
+              </a>
+            {% endif %}
+          </div>
         </div>
       </div>
 

@@ -14,14 +14,14 @@
   <div class="container">
     <ul class="trust-list" role="list">
       {% for badge in badges %}
-        <li class="trust-item">
-          <i class="{{ badge.icon }}" class="trust-icon" aria-hidden="true" style="font-size:1.6rem;color:var(--color-accent);"></i>
-          <div>
-            <div class="trust-item-title">{{ badge.title }}</div>
-            {% if badge.description %}
-              <div class="trust-item-desc">{{ badge.description }}</div>
-            {% endif %}
+        <li class="trust-item animate-fade-up delay-{{ loop.index }}">
+          <div class="trust-icon-wrap" aria-hidden="true">
+            <i class="{{ badge.icon }} trust-icon"></i>
           </div>
+          <div class="trust-item-title">{{ badge.title }}</div>
+          {% if badge.description %}
+            <div class="trust-item-desc">{{ badge.description }}</div>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>

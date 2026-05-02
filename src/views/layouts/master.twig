@@ -146,21 +146,33 @@
   ═══════════════════════════════════════════════ #}
   <style>
     :root {
-      --color-primary:   {{ settings.primary_color | default('#1a1a2e') }};
-      --color-accent:    {{ settings.accent_color   | default('#e94560') }};
-      --color-bg:        #ffffff;
-      --color-surface:   #f8f9fa;
-      --color-border:    #e9ecef;
-      --color-text:      #212529;
-      --color-text-muted:#6c757d;
-      --font-family:     'IBM Plex Sans Arabic', sans-serif;
-      --radius-sm:       6px;
-      --radius-md:       10px;
-      --radius-lg:       16px;
-      --shadow-sm:       0 1px 3px rgba(0,0,0,.08);
-      --shadow-md:       0 4px 16px rgba(0,0,0,.10);
-      --transition:      all .22s ease;
-      --container-max:   1280px;
+      --color-primary:       {{ settings.primary_color | default('#0f0e17') }};
+      --color-accent:        {{ settings.accent_color   | default('#ff2d55') }};
+      --color-secondary:     #6c63ff;
+      --color-gold:          #f5a623;
+      --color-bg:            #ffffff;
+      --color-surface:       #f8f8ff;
+      --color-border:        #ebebf5;
+      --color-text:          #1a1a2e;
+      --color-text-muted:    #8b8ba7;
+      --font-family:         'IBM Plex Sans Arabic', sans-serif;
+      --radius-sm:           8px;
+      --radius-md:           14px;
+      --radius-lg:           20px;
+      --radius-xl:           32px;
+      --shadow-sm:           0 2px 10px rgba(15,14,23,.06);
+      --shadow-md:           0 8px 30px rgba(15,14,23,.10);
+      --shadow-lg:           0 20px 60px rgba(15,14,23,.15);
+      --shadow-accent:       0 8px 28px rgba(255,45,85,.30);
+      --shadow-purple:       0 8px 28px rgba(108,99,255,.25);
+      --transition:          all .28s cubic-bezier(.4,0,.2,1);
+      --gradient-primary:    linear-gradient(135deg, #0f0e17 0%, #1e1b4b 100%);
+      --gradient-accent:     linear-gradient(135deg, #ff2d55 0%, #ff6b6b 100%);
+      --gradient-purple:     linear-gradient(135deg, #6c63ff 0%, #a855f7 100%);
+      --gradient-gold:       linear-gradient(135deg, #f5a623 0%, #fbbf24 100%);
+      --gradient-teal:       linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      --gradient-hero-overlay: linear-gradient(120deg, rgba(15,14,23,.82) 0%, rgba(15,14,23,.45) 55%, rgba(15,14,23,.1) 100%);
+      --container-max:       1280px;
     }
   </style>
 
@@ -168,6 +180,11 @@
      Main Stylesheet
   ═══════════════════════════════════════════════ #}
   {{ 'css/theme.css' | asset_url | stylesheet_tag }}
+
+  {# ═══════════════════════════════════════════════
+     Premium Visual Enhancement Layer
+  ═══════════════════════════════════════════════ #}
+  {{ 'css/visual.css' | asset_url | stylesheet_tag }}
 
   {# ═══════════════════════════════════════════════
      Salla Components (Web Components)

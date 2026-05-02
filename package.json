@@ -1,0 +1,11 @@
+{
+  "name": "kwd-theme",
+  "version": "1.0.0",
+  "description": "KWD Store Theme",
+  "scripts": {
+    "development": "echo Theme development command is ready",
+    "dev": "salla theme preview",
+    "build": "salla theme publish"
+  },
+  "devDependencies": {}
+}
